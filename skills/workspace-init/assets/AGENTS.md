@@ -51,6 +51,10 @@ A change is complete when:
 - Use `<env-file-example>` for local configuration.
 - Ask before adding production dependencies or changing deployment/security-sensitive code.
 
+## Dates & Document Headers
+
+- Obtain timestamps from the shell (`date`, `Get-Date`); never invent them. Standalone documents (reports, plans, assessments) carry a `> Created: YYYY-MM-DD HH:MM` line near the top.
+
 ## Tracking Files
 
 - `SESSION_LOG.md`: append concise per-session entries after file changes or unresolved issues; one timestamp may group related changes; for bugfixes, record symptom, root cause, pitfall, and final fix when reusable.

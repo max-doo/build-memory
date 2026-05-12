@@ -90,6 +90,10 @@ Codex `/init` 命令会在当前目录生成 `AGENTS.md` scaffold，需要人工
 - Use `<env-file-example>` for local configuration.
 - Ask before adding production dependencies or changing deployment/security-sensitive code.
 
+## Dates & Document Headers
+
+- Obtain timestamps from the shell (`date`, `Get-Date`); never invent them. Standalone documents (reports, plans, assessments) carry a `> Created: YYYY-MM-DD HH:MM (TZ)` line near the top.
+
 ## Agent-Specific Instructions
 
 - Before editing, inspect the relevant files and existing patterns.
@@ -233,6 +237,10 @@ Prefer targeted tests while iterating. Before finalizing a broad code change, ru
 - Keep summaries of changed files and test commands when compacting.
 - Use @docs/<specific-doc>.md for detailed procedures instead of copying them here.
 - If a workflow is long or task-specific, propose moving it to `.claude/skills/` or `.claude/rules/`.
+
+## Dates & Document Headers
+
+- Obtain timestamps from the shell (`date`, `Get-Date`); never invent them. Standalone documents (reports, plans, assessments) carry a `> Created: YYYY-MM-DD HH:MM (TZ)` line near the top.
 
 ## Known Gotchas
 
@@ -473,6 +481,7 @@ repo/
 | 架构边界 | `UI must not import database clients` | `AGENTS.md` |
 | 高风险约束 | `Do not delete migrations without approval` | `AGENTS.md` |
 | 完成标准 | `Relevant checks must pass or blockers documented` | `AGENTS.md` |
+| 日期/时间纪律 | `时间须用 shell date 取；报告类文档头部需 Created:` | 同时写入 `AGENTS.md` 与 `CLAUDE.md` |
 | Claude 工作方式 | `Use Plan Mode for broad refactors` | `CLAUDE.md` |
 | Claude subagent 策略 | `Use security-reviewer for auth changes` | `CLAUDE.md` |
 | Claude 输出格式 | `Changed files / Validation / Risks` | `CLAUDE.md` |

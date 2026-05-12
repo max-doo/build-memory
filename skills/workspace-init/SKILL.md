@@ -7,9 +7,10 @@ description: Initialize or refine agent workspace tracking and rule files. Use w
 
 Create or refine five managed files at the project root: `AGENTS.md`, `CLAUDE.md`, `CHANGELOG.md`, `SESSION_LOG.md`, `TODO.md`.
 
-Two non-negotiable rules:
+Three non-negotiable rules:
 - **Independence.** `AGENTS.md` and `CLAUDE.md` stay independent. Never add `@AGENTS.md` to `CLAUDE.md` (or vice versa). Some duplicated facts between the two are acceptable.
 - **No silent rewrites.** Never overwrite or delete existing content without explicit user approval.
+- **Real time.** Before writing any timestamp into a managed file, obtain the current date/time from the system via a shell command (`date`, `date -Iseconds`, `Get-Date`, etc.). Do not invent timestamps from memory.
 
 Templates ship in English only under `assets/`. Translate to the target language at write time.
 
@@ -31,6 +32,14 @@ Before any write, gather facts:
 - Package manager / language / framework (`package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, etc.)
 - Real commands from `package.json` scripts, `Makefile`, CI configs
 - Existing managed files and likely aliases (`agent.md`, `WORKLOG.md`, `.agent/log.md`, etc.)
+
+**Empty workspace detection.** If the inspection finds no source directory, no package manifest (`package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, etc.), no build/test config (`Makefile`, `tsconfig.json`, …), and no CI configuration — i.e. only `.git`, README, license, or dotfiles — STOP before writing any managed file. Ask the user to choose:
+
+1. Skip workspace init for now.
+2. Describe the planned project (language, framework, intent) so meaningful defaults can be filled in.
+3. Create minimal scaffold files with prominent `TODO: empty workspace` markers and a leading comment noting the workspace was empty at init time.
+
+Do not auto-fill placeholders in an empty workspace; the resulting noise outweighs the value.
 
 Never invent commands or paths. If a placeholder cannot be filled from the repo, leave a `TODO: confirm` marker and tell the user.
 

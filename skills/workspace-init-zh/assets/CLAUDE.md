@@ -79,6 +79,10 @@ IMPORTANT：依赖操作使用 `<package-manager>`，不要使用 `<disallowed-p
 - 将 `<security-sensitive-paths>` 下的改动视作安全敏感。
 - 修改鉴权、权限、加密、计费、部署配置前需确认。
 
+## 日期与文档头
+
+- 时间戳一律用 shell（`date`、`Get-Date`）获取，禁止凭记忆编造；评估 / 方案 / 报告等独立文档在顶部加 `> 创建于：YYYY-MM-DD HH:MM` 一行。
+
 ## 跟踪文件
 
 - `SESSION_LOG.md`：在文件变更或留下未解决事项后追加简短的会话级条目；同一时间戳可聚合多条相关更改。

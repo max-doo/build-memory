@@ -7,9 +7,10 @@ description: 初始化或完善 agent 工作空间的跟踪与规则文件。适
 
 在项目根目录创建或完善五个受管文件：`AGENTS.md`、`CLAUDE.md`、`CHANGELOG.md`、`SESSION_LOG.md`、`TODO.md`。
 
-两条不可妥协的规则：
+三条不可妥协的规则：
 - **独立性。** `AGENTS.md` 与 `CLAUDE.md` 保持独立。永远不要在 `CLAUDE.md` 中加入 `@AGENTS.md`（反之亦然）。两份文件之间允许少量事实重复。
 - **不静默改写。** 未经用户明确同意，不得覆盖或删除已有内容。
+- **真实时间。** 写入任何受管文件中的时间戳之前，必须通过 shell 命令（`date`、`date -Iseconds`、`Get-Date` 等）获取系统真实时间。不得凭记忆编造时间戳。
 
 模板仅以英文形式存放于 `assets/`，写入时按目标语言翻译。
 
@@ -31,6 +32,14 @@ description: 初始化或完善 agent 工作空间的跟踪与规则文件。适
 - 包管理器 / 语言 / 框架（`package.json`、`pyproject.toml`、`Cargo.toml`、`go.mod` 等）
 - 来自 `package.json` scripts、`Makefile`、CI 配置的真实命令
 - 已存在的受管文件及可能的别名（`agent.md`、`WORKLOG.md`、`.agent/log.md` 等）
+
+**空工作空间检测。** 若检查时未发现源码目录、未发现包管理清单（`package.json`、`pyproject.toml`、`Cargo.toml`、`go.mod` 等）、未发现构建/测试配置（`Makefile`、`tsconfig.json` 等），也未发现 CI 配置——即目录仅含 `.git`、README、license 或 dotfiles——在写入任何受管文件之前先**停下并询问用户**：
+
+1. 暂时跳过工作空间初始化。
+2. 由用户简述拟开发的项目（语言、框架、目标），以便用合理的默认值填充。
+3. 生成最小骨架文件，并在显著位置加 `TODO: empty workspace` 标记与说明，表明此时工作空间为空。
+
+空工作空间不要自动填充占位符；铺满 `TODO: confirm` 反而比不写更糟。
 
 不得编造命令或路径。若占位符无法从仓库中确认，留下 `TODO: confirm` 标记并告知用户。
 

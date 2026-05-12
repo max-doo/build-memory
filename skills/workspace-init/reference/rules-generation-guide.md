@@ -90,6 +90,10 @@ The Codex `/init` command generates an `AGENTS.md` scaffold in the current direc
 - Use `<env-file-example>` for local configuration.
 - Ask before adding production dependencies or changing deployment/security-sensitive code.
 
+## Dates & Document Headers
+
+- Obtain timestamps from the shell (`date`, `Get-Date`); never invent them. Standalone documents (reports, plans, assessments) carry a `> Created: YYYY-MM-DD HH:MM (TZ)` line near the top.
+
 ## Agent-Specific Instructions
 
 - Before editing, inspect the relevant files and existing patterns.
@@ -233,6 +237,10 @@ Prefer targeted tests while iterating. Before finalizing a broad code change, ru
 - Keep summaries of changed files and test commands when compacting.
 - Use @docs/<specific-doc>.md for detailed procedures instead of copying them here.
 - If a workflow is long or task-specific, propose moving it to `.claude/skills/` or `.claude/rules/`.
+
+## Dates & Document Headers
+
+- Obtain timestamps from the shell (`date`, `Get-Date`); never invent them. Standalone documents (reports, plans, assessments) carry a `> Created: YYYY-MM-DD HH:MM (TZ)` line near the top.
 
 ## Known Gotchas
 
@@ -473,6 +481,7 @@ For tool isolation without divergence, do not `@AGENTS.md` from `CLAUDE.md`, but
 | Architecture boundary | `UI must not import database clients` | `AGENTS.md` |
 | High-risk constraint | `Do not delete migrations without approval` | `AGENTS.md` |
 | Done criteria | `Relevant checks must pass or blockers documented` | `AGENTS.md` |
+| Date/time discipline | `Use shell date; report docs need a Created: header` | both `AGENTS.md` and `CLAUDE.md` |
 | Claude working style | `Use Plan Mode for broad refactors` | `CLAUDE.md` |
 | Claude subagent strategy | `Use security-reviewer for auth changes` | `CLAUDE.md` |
 | Claude output format | `Changed files / Validation / Risks` | `CLAUDE.md` |

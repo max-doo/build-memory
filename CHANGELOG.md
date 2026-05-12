@@ -14,6 +14,17 @@
 
 ## [Unreleased]
 
+### Added
+
+- 空工作空间处理：检测到目录仅含 `.git` / README / dotfiles 时，skill 暂停并询问用户（跳过 / 描述项目 / 生成带 `TODO: empty workspace` 标记的最小骨架），不再静默铺满 `TODO: confirm` 占位符。
+- `AGENTS.md` 与 `CLAUDE.md` 模板新增「日期与文档头」一节（单行规则）：时间戳一律用 shell 获取，评估 / 方案 / 报告类独立文档在顶部加 `Created:` 一行。
+
+### Changed
+
+- `SKILL.md` 顶部「非妥协规则」从两条扩展为三条，新增「真实时间」原则。
+- `reference/rules-generation-guide.md` 同步更新嵌入模板与 §5.1 内容决策表。
+- `workspace-init-zh` 中文版 skill 同步上述变更。
+
 ## [1.0.0] - 2026-05-04
 
 首个公开发布版本，确立 `workspace-init` 的基本职责：为项目初始化一套与 AI Agent 协作的基准规则与跟踪文件。

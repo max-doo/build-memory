@@ -12,10 +12,12 @@ Rules:
 
 ## Pending
 
+### YYYY-MM-DD
+
 - [ ] Important pending item
 
 ## Done
 
 ### YYYY-MM-DD
 
-- [x] Completed item
+- [x] Completed item | YYYY-MM-DD（created date）

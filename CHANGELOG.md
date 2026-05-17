@@ -14,6 +14,8 @@
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-05-17
+
 ### Added
 
 - 空工作空间处理：检测到目录仅含 `.git` / README / dotfiles 时，skill 暂停并询问用户（跳过 / 描述项目 / 生成带 `TODO: empty workspace` 标记的最小骨架），不再静默铺满 `TODO: confirm` 占位符。

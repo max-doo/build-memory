@@ -8,7 +8,7 @@ description: 初始化或完善 agent 工作空间的跟踪与规则文件。适
 在项目根目录创建或完善五个受管文件：`AGENTS.md`、`CLAUDE.md`、`CHANGELOG.md`、`SESSION_LOG.md`、`TODO.md`。
 
 三条不可妥协的规则：
-- **独立性。** `AGENTS.md` 与 `CLAUDE.md` 保持独立。永远不要在 `CLAUDE.md` 中加入 `@AGENTS.md`（反之亦然）。两份文件之间允许少量事实重复。
+- **单点事实来源 (Single Source of Truth)。** 所有通用的项目规则、命令、技术栈均写入 `AGENTS.md`。`CLAUDE.md` 仅作为一个极简的入口，强制要求通过 `@AGENTS.md` 引用它。禁止在 `CLAUDE.md` 中重复写具体命令。
 - **不静默改写。** 未经用户明确同意，不得覆盖或删除已有内容。
 - **真实时间。** 写入任何受管文件中的时间戳之前，必须通过 shell 命令（`date`、`date -Iseconds`、`Get-Date` 等）获取系统真实时间。不得凭记忆编造时间戳。
 
@@ -53,8 +53,8 @@ description: 初始化或完善 agent 工作空间的跟踪与规则文件。适
 
 | 文件 | 角色 | 目标 |
 |------|------|------|
-| `AGENTS.md` | 面向任意 code agent 的仓库指南 | 200–400 词 |
-| `CLAUDE.md` | Claude 专属项目记忆；**自包含**（不带 `@AGENTS.md`） | ≤150 行 |
+| `AGENTS.md` | 面向所有 code agent 的项目主仓库指南（含所有规则、栈与命令） | 200–400 词 |
+| `CLAUDE.md` | Claude 极简入口；**必须**包含 `@AGENTS.md` 引用 | 1–3 行 |
 | `CHANGELOG.md` | 面向发布；仅记录版本级条目 | — |
 | `SESSION_LOG.md` | Agent 操作日志；按会话时间戳记录 | — |
 | `TODO.md` | 用户主导的 backlog；仅 `Pending` / `Done`（无 `In progress`） | — |
@@ -77,7 +77,7 @@ description: 初始化或完善 agent 工作空间的跟踪与规则文件。适
      - §6 附录：内容决策对照表
 3. 分类差异：
    - **小问题** — 措辞修订、过期命令、缺失的单行跟踪文件说明、无害冗余。直接编辑。
-   - **大问题** — 文件角色错误（如 `CLAUDE.md` 仅是会话日志）、文件互相 import（`@AGENTS.md` / `@CLAUDE.md`）、文件长度超过推荐值的 2 倍、整段内容与规范矛盾。
+   - **大问题** — 文件角色错误（如 `CLAUDE.md` 包含全套命令而非只引用 `@AGENTS.md`）、文件长度超过推荐值的 2 倍、整段内容与规范矛盾。
 4. **大问题需在编辑前征得用户同意。** 提供问题与建议改动的简短摘要；等待批准、跳过或逐项指示。
 
 ### 5. 报告
@@ -94,8 +94,8 @@ description: 初始化或完善 agent 工作空间的跟踪与规则文件。适
   - §7 判断清单：每个跟踪文件应写入的内容
 - `reference/rules-generation-guide.md` — `AGENTS.md`、`CLAUDE.md` 的完整规则。
   - §1 AGENTS.md：Codex 风格仓库指南，200–400 词
-  - §2 CLAUDE.md：Claude Code session onboarding，≤150 行，自包含
-  - §3 差异化写法：AGENTS.md 与 CLAUDE.md 的差别、独立性规则
+  - §2 CLAUDE.md：Claude Code 极简入口，仅包含对 AGENTS.md 的引用
+  - §3 主从引用模式：AGENTS.md 与 CLAUDE.md 的单点事实来源规则
   - §6 附录：内容决策对照表（哪类内容放哪里）
 
 完善与模板有非平凡差异的文件前，应先阅读相关参考章节。

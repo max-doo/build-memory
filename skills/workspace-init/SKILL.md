@@ -8,7 +8,7 @@ description: Initialize or refine agent workspace tracking and rule files. Use w
 Create or refine five managed files at the project root: `AGENTS.md`, `CLAUDE.md`, `CHANGELOG.md`, `SESSION_LOG.md`, `TODO.md`.
 
 Three non-negotiable rules:
-- **Independence.** `AGENTS.md` and `CLAUDE.md` stay independent. Never add `@AGENTS.md` to `CLAUDE.md` (or vice versa). Some duplicated facts between the two are acceptable.
+- **Single Source of Truth.** All generic project rules, commands, and tech stack MUST be written in `AGENTS.md`. `CLAUDE.md` serves only as a minimalist entry point and MUST include a `@AGENTS.md` reference. Do NOT duplicate specific commands or rules in `CLAUDE.md`.
 - **No silent rewrites.** Never overwrite or delete existing content without explicit user approval.
 - **Real time.** Before writing any timestamp into a managed file, obtain the current date/time from the system via a shell command (`date`, `date -Iseconds`, `Get-Date`, etc.). Do not invent timestamps from memory.
 
@@ -53,8 +53,8 @@ For each missing file:
 
 | File | Role | Target |
 |------|------|--------|
-| `AGENTS.md` | Repository guidelines for any code agent | 200–400 words |
-| `CLAUDE.md` | Claude-specific project memory; **self-contained** (no `@AGENTS.md`) | ≤150 lines |
+| `AGENTS.md` | Main repository guidelines for all code agents (contains all rules, stacks, commands) | 200–400 words |
+| `CLAUDE.md` | Claude minimalist entry point; **MUST** include `@AGENTS.md` reference | 1–3 lines |
 | `CHANGELOG.md` | Release-facing; version-level entries only | — |
 | `SESSION_LOG.md` | Agent operational log; per-session timestamped entries | — |
 | `TODO.md` | User-governed backlog; `Pending` / `Done` only (no `In progress`) | — |
@@ -77,7 +77,7 @@ For each existing managed file:
      - §6 Appendix: content decision table
 3. Classify the gap:
    - **Minor** — wording fixes, a stale command, a missing one-line tracking-file note, harmless extras. Edit in place.
-   - **Major** — wrong file role (e.g. `CLAUDE.md` is just a session log), one file imports the other (`@AGENTS.md` / `@CLAUDE.md`), file >2× recommended length, or whole sections contradict the spec.
+   - **Major** — wrong file role (e.g. `CLAUDE.md` contains full commands instead of referencing `@AGENTS.md`), file >2× recommended length, or whole sections contradict the spec.
 4. **Major gaps require user confirmation before any edit.** Present a short summary of issues and proposed changes; wait for approval, skip, or item-by-item direction.
 
 ### 5. Report
@@ -93,9 +93,9 @@ End with a concise report: **created**, **refined**, **left alone**, **pending d
   - §4 TODO: user-governed backlog, Pending/Done only, no "In progress"
   - §7 Decision checklists: what belongs in each tracking file
 - `reference/rules-generation-guide.md` — full rules for `AGENTS.md`, `CLAUDE.md`.
-  - §1 AGENTS.md: Codex-style repository guidelines, 200–400 words
-  - §2 CLAUDE.md: Claude Code session onboarding, ≤150 lines, self-contained
-  - §3 Differential writing: how AGENTS.md and CLAUDE.md differ, independence rules
+  - §1 AGENTS.md: Main repository guidelines, 200–400 words
+  - §2 CLAUDE.md: Claude Code minimalist entry point, only referencing AGENTS.md
+  - §3 Master-Mirror Pattern: single source of truth rules for AGENTS.md and CLAUDE.md
   - §6 Appendix: content decision table (what goes where)
 
 Read the relevant reference sections before refining a file with non-trivial differences from the template.

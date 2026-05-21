@@ -64,7 +64,7 @@ For each missing file:
 For each existing managed file:
 
 1. Read it in full.
-2. Compare against the spec. Read only the relevant sections:
+2. **Strictly** compare against the spec. If you haven't loaded the specs, you **MUST** read the relevant reference sections (do not skip or guess from memory):
    - For `CHANGELOG.md`, `SESSION_LOG.md`, `TODO.md`: see `reference/tracking-files-guide.md`
      - §2 CHANGELOG definition and rules
      - §3 SESSION_LOG definition and rules
@@ -75,10 +75,13 @@ For each existing managed file:
      - §2 CLAUDE.md generation guide
      - §3 Differential writing (AGENTS.md vs CLAUDE.md)
      - §6 Appendix: content decision table
-3. Classify the gap:
-   - **Minor** — wording fixes, a stale command, a missing one-line tracking-file note, harmless extras. Edit in place.
-   - **Major** — wrong file role (e.g. `CLAUDE.md` contains full commands instead of referencing `@AGENTS.md`), file >2× recommended length, or whole sections contradict the spec.
-4. **Major gaps require user confirmation before any edit.** Present a short summary of issues and proposed changes; wait for approval, skip, or item-by-item direction.
+3. Classify the gap (**Strict Audit, No Compromises**):
+   - **Minor** — strict wording fixes, clearly stale commands, or harmless micro-extras. Edit in place.
+   - **Major** — structural non-compliance (e.g. `AGENTS.md` missing required sections or violating single source of truth), wrong file role (e.g. `CLAUDE.md` contains full commands instead of referencing `@AGENTS.md`), file >2× recommended length, `TODO.md` containing "In progress" sections, or `CHANGELOG.md` used as a daily log.
+4. **Major gaps require user confirmation before any edit. NEVER silently patch or force-merge content into non-compliant structures.** 
+   - You must explicitly point out the violations to the user and flag them as "Major".
+   - Present a short summary of issues and a proposal for a **complete rewrite** of the affected section.
+   - Stop and wait for user approval, skip, or item-by-item direction.
 
 ### 5. Report
 

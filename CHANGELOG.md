@@ -14,6 +14,21 @@
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-05-22
+
+### Added
+
+- **Master-Mirror 规则文件架构**: 在 `SKILL.md` 中以 "单一事实来源 (Single Source of Truth)" 原则取代原有的 "独立性 (Independence)" 原则。
+- **Done Criteria 标准强化**: 在 `AGENTS.md` 模板中引入更严格、更具体的「Done Criteria (完成标准)」检查清单（包括需求满足、范围极小化、验证通过、风险评估、构建成功）。
+- **极简 CLAUDE.md 入口**: 将 `CLAUDE.md` 模板简化为 1-3 行的极简入口，强制包含指向 `AGENTS.md` 的引用（`@AGENTS.md`），以避免规则冗余、漂移以及双向循环依赖。
+
+### Changed
+
+- **SKILL 审计行为强化**: 强化了 `SKILL.md` 针对已存在文件的对比审计行为，明确界定了“大问题”的范畴（如 `CLAUDE.md` 包含具体命令而非只引用 `@AGENTS.md`、`TODO.md` 包含“进行中”区块等），并要求绝对禁止静默补丁，必须提供重写建议摘要并征求用户明确同意。
+- **参考指南与 README 简化重构**: 
+  - 大幅简化了 `rules-generation-guide.md`，去除了繁琐的重复对比表，并详细阐述了最新的 Master-Mirror 架构。
+  - 对中英文的 `README.md` 和 `README-zh.md` 进行了全面结构重组与精简，使其更易于阅读和维护。
+
 ## [1.1.0] - 2026-05-17
 
 ### Added

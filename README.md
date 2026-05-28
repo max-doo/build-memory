@@ -2,7 +2,7 @@
 
 > **Preserve context, externalize memory, and keep humans and agents aligned.**
 
-> This project is forked from the original `workspace-init` project and continues its workspace context-initialization approach under the `build-memory` name.
+> This project is forked from the original [`workspace-init`](https://github.com/max-doo/workspace-init) project and continues its workspace context-initialization approach under the `build-memory` name.
 
 ---
 

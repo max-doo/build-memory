@@ -2,7 +2,7 @@
 
 > **保存上下文，外化记忆，让 Agent 之间、人与 Agent 之间相互对齐。**
 
-> 本项目 fork 自原 `workspace-init` 项目，并在 `build-memory` 名称下延续其工作区上下文初始化思路。
+> 本项目 fork 自原 [`workspace-init`](https://github.com/max-doo/workspace-init) 项目，并在 `build-memory` 名称下延续其工作区上下文初始化思路。
 
 ---
 

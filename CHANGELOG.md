@@ -12,7 +12,9 @@
 - 留空的小节（Removed、Security 等）可删除。
 -->
 
-## [Unreleased]
+## [1.0.0] - 2026-05-28
+
+本项目正式更名为 `build-memory` 并发布 v1.0.0 版本。全面继承自原 `workspace-init` 项目的核心架构，并进一步拓展了项目记忆层的持久化与归档能力。
 
 ### Added
 
@@ -26,7 +28,10 @@
 - README / README-zh 增加原始 `workspace-init` 项目来源说明。
 - 更新英文/中文 skill、模板和参考文档，明确 `python .memory/session_log.py` 是推荐的 `SESSION_LOG.md` 写入口。
 
-## [1.2.0] - 2026-05-22
+---
+*以下为原 `workspace-init` 项目的历史发布记录*
+
+## [workspace-init 1.2.0] - 2026-05-22
 
 ### Added
 
@@ -41,7 +46,7 @@
   - 大幅简化了 `rules-generation-guide.md`，去除了繁琐的重复对比表，并详细阐述了最新的 Master-Mirror 架构。
   - 对中英文的 `README.md` 和 `README-zh.md` 进行了全面结构重组与精简，使其更易于阅读和维护。
 
-## [1.1.0] - 2026-05-17
+## [workspace-init 1.1.0] - 2026-05-17
 
 ### Added
 
@@ -54,7 +59,7 @@
 - `reference/rules-generation-guide.md` 同步更新嵌入模板与 §5.1 内容决策表。
 - `build-memory-zh` 中文版 skill 同步上述变更。
 
-## [1.0.0] - 2026-05-04
+## [workspace-init 1.0.0] - 2026-05-04
 
 首个公开发布版本，确立 `build-memory` 的基本职责：为项目初始化一套与 AI Agent 协作的基准规则与跟踪文件。
 

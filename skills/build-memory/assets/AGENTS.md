@@ -95,7 +95,10 @@ A session or task is considered complete when:
 
 ## Tracking Files
 
-- `SESSION_LOG.md`: append concise per-session entries after file changes or unresolved issues; one timestamp may group related changes; for bugfixes, record symptom, root cause, pitfall, and final fix when reusable.
+- `SESSION_LOG.md`: recent 7-day collaboration log. Read it directly when recent context is needed.
+- Use `python .memory/session_log.py` to append session notes; do not edit `SESSION_LOG.md` manually. The script handles current time, file-lock retries, old-date archival, and structured entry formatting.
+- `.memory/KNOWLEDGE.md`: long-term reusable lessons and decisions. Read it only for recurring issues, debugging, architecture decisions, or when the current task likely depends on prior project experience.
+- `.memory/sessions/`: archived daily session logs older than the recent window. Do not read by default unless tracing older history.
 - `TODO.md`: user-governed, agent-assisted backlog; do not read or edit by default; if a session ends with unresolved items, suggest the user update TODO and apply changes only after user approval.
 - `CHANGELOG.md`: release-facing changelog; only update for user-visible or release-relevant changes.
 

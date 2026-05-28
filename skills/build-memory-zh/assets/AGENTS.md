@@ -95,7 +95,10 @@ IMPORTANT：依赖操作使用 `<package-manager>`，不要使用 `<disallowed-p
 
 ## 跟踪文件
 
-- `SESSION_LOG.md`：在文件变更或留下未解决事项后追加简短的会话级条目；同一时间戳可聚合多条相关更改；修复 bug 时如有复用价值，记录现象、根因、踩坑点与最终修复。
+- `SESSION_LOG.md`：最近 7 天协作日志；需要近期上下文时可直接读取。
+- 使用 `python .memory/session_log.py` 追加 session 记录；不要手工编辑 `SESSION_LOG.md`。脚本会自动处理当前时间、文件锁重试、旧日期归档和结构化条目格式。
+- `.memory/KNOWLEDGE.md`：长期可复用经验和决策；仅在处理反复问题、调试、架构决策或当前任务明显依赖项目历史经验时读取。
+- `.memory/sessions/`：超过最近窗口的每日归档日志；默认不读取，除非需要追溯更早历史。
 - `TODO.md`：用户主导、agent 辅助的 backlog；默认不读取或编辑；如果会话结束有待解决的遗留事项可建议用户更新TODO，由用户批准后再应用。
 - `CHANGELOG.md`：面向发布的变更日志；仅在用户可见或发布相关变更时更新。
 

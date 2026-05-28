@@ -1,14 +1,15 @@
 ---
-name: workspace-init
-description: 初始化或完善 agent 工作空间的跟踪与规则文件。适用场景：(1) 用户运行 `/workspace-init` 或要求初始化工作空间；(2) 创建或更新 AGENTS.md / CLAUDE.md / CHANGELOG.md / SESSION_LOG.md / TODO.md；(3) 审计已有的规则或跟踪文件以发现质量问题；(4) 为项目补齐缺失的受管文件；(5) 用户询问工作空间约定、会话日志、待办、变更日志相关问题。
+name: build-memory-zh
+description: 初始化或完善 agent 工作空间的跟踪与规则文件。适用场景：(1) 用户运行 `/build-memory` 或要求初始化工作空间；(2) 创建或更新 AGENTS.md / CLAUDE.md / CHANGELOG.md / SESSION_LOG.md / TODO.md；(3) 审计已有的规则或跟踪文件以发现质量问题；(4) 为项目补齐缺失的受管文件；(5) 用户询问工作空间约定、会话日志、待办、变更日志相关问题。
 ---
 
 # 工作空间初始化
 
-在项目根目录创建或完善五个受管文件：`AGENTS.md`、`CLAUDE.md`、`CHANGELOG.md`、`SESSION_LOG.md`、`TODO.md`。
+在项目根目录创建或完善五个受管文件：`AGENTS.md`、`CLAUDE.md`、`CHANGELOG.md`、`SESSION_LOG.md`、`TODO.md`，并补充轻量 `.memory/` 支撑目录，用于稳定写入 session log 和沉淀长期经验。
 
-三条不可妥协的规则：
+四条不可妥协的规则：
 - **单点事实来源 (Single Source of Truth)。** 所有通用的项目规则、命令、技术栈均写入 `AGENTS.md`。`CLAUDE.md` 仅作为一个极简的入口，强制要求通过 `@AGENTS.md` 引用它。禁止在 `CLAUDE.md` 中重复写具体命令。
+- **脚本化写入 session 记录。** Agent 应优先使用 `python .memory/session_log.py` 追加 session 记录，而不是手工编辑 `SESSION_LOG.md`；脚本负责锁、7 天归档和结构化格式。
 - **不静默改写。** 未经用户明确同意，不得覆盖或删除已有内容。
 - **真实时间。** 写入任何受管文件中的时间戳之前，必须通过 shell 命令（`date`、`date -Iseconds`、`Get-Date` 等）获取系统真实时间。不得凭记忆编造时间戳。
 
@@ -21,7 +22,7 @@ description: 初始化或完善 agent 工作空间的跟踪与规则文件。适
 对于**新建**文件：
 - **明确指令**（“use English”、“用中文”、“create in Japanese”）→ 使用该语言。
 - **实质性用户输入**（除单纯调用外，附带任意语言的指令或上下文）→ 检测该输入的语言。
-- **空调用**（仅 `/workspace-init`、“init workspace” 或类似无附加要求的调用）→ **询问用户**使用哪种语言，不要猜测。
+- **空调用**（仅 `/build-memory`、“init workspace” 或类似无附加要求的调用）→ **询问用户**使用哪种语言，不要猜测。
 
 对于**完善**已有文件，沿用文件原语言，不进行翻译。
 
@@ -43,13 +44,15 @@ description: 初始化或完善 agent 工作空间的跟踪与规则文件。适
 
 不得编造命令或路径。若占位符无法从仓库中确认，留下 `TODO: confirm` 标记并告知用户。
 
-### 3. 创建缺失文件
+### 3. 创建缺失文件和记忆支撑目录
 
 对每个缺失文件：
 1. 读取 `assets/<filename>` 处的英文模板。
 2. 将固定文本（标题、注释、标签）翻译为目标语言。
 3. 用第 2 步获得的事实替换占位符。
 4. 写入项目根目录。
+
+如果目标项目缺少 `.memory/`，还应将 `assets/.memory/` 复制到项目根目录作为 `.memory/`。未经用户明确批准，不要覆盖已有的 `.memory/session_log.py` 或 `.memory/KNOWLEDGE.md`。
 
 | 文件 | 角色 | 目标 |
 |------|------|------|
@@ -58,6 +61,8 @@ description: 初始化或完善 agent 工作空间的跟踪与规则文件。适
 | `CHANGELOG.md` | 面向发布；仅记录版本级条目 | — |
 | `SESSION_LOG.md` | Agent 操作日志；按会话时间戳记录 | — |
 | `TODO.md` | 用户主导的 backlog；仅 `Pending` / `Done`（无 `In progress`） | — |
+| `.memory/session_log.py` | 推荐的 session log 写入脚本，包含锁重试、7 天归档和 lesson 候选提示 | — |
+| `.memory/KNOWLEDGE.md` | 长期可复用经验和稳定决策；仅按需读取 | — |
 
 ### 4. 完善已有文件
 
@@ -90,6 +95,7 @@ description: 初始化或完善 agent 工作空间的跟踪与规则文件。适
 ## 资源与参考
 
 - `assets/<filename>` — 五个受管文件的英文模板。
+- `assets/.memory/` — 支撑脚本、长期知识模板和归档目录占位文件。
 - `reference/tracking-files-guide.md` — `CHANGELOG.md`、`SESSION_LOG.md`、`TODO.md` 的完整规则。
   - §2 CHANGELOG：面向发布、版本级时间戳、何时创建
   - §3 SESSION_LOG：agent 操作日志、按会话条目、bugfix 上下文

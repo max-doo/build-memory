@@ -14,6 +14,18 @@
 
 ## [Unreleased]
 
+### Added
+
+- 新增 `.memory/session_log.py` 模板脚本，用于结构化追加 `SESSION_LOG.md`、锁重试、7 天归档和 lesson 候选提示。
+- 新增 `.memory/KNOWLEDGE.md` 与 `.memory/sessions/` 模板，用于长期经验沉淀和旧 session 日志归档。
+- 增加 `tests/test_session_log.py`，覆盖 session log 写入、归档、锁超时和 lesson 候选识别。
+
+### Changed
+
+- 将项目对外命名从 `workspace-init` 统一调整为 `build-memory`，并同步更新 skill 目录、调用示例与安装路径。
+- README / README-zh 增加原始 `workspace-init` 项目来源说明。
+- 更新英文/中文 skill、模板和参考文档，明确 `python .memory/session_log.py` 是推荐的 `SESSION_LOG.md` 写入口。
+
 ## [1.2.0] - 2026-05-22
 
 ### Added
@@ -40,11 +52,11 @@
 
 - `SKILL.md` 顶部「非妥协规则」从两条扩展为三条，新增「真实时间」原则。
 - `reference/rules-generation-guide.md` 同步更新嵌入模板与 §5.1 内容决策表。
-- `workspace-init-zh` 中文版 skill 同步上述变更。
+- `build-memory-zh` 中文版 skill 同步上述变更。
 
 ## [1.0.0] - 2026-05-04
 
-首个公开发布版本，确立 `workspace-init` 的基本职责：为项目初始化一套与 AI Agent 协作的基准规则与跟踪文件。
+首个公开发布版本，确立 `build-memory` 的基本职责：为项目初始化一套与 AI Agent 协作的基准规则与跟踪文件。
 
 ### Added
 

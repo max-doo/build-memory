@@ -1,6 +1,8 @@
-# workspace-init — Building a Cross-Agent Project Memory Layer
+# build-memory — Building a Cross-Agent Project Memory Layer
 
 > **Preserve context, externalize memory, and keep humans and agents aligned.**
+
+> This project is forked from the original `workspace-init` project and continues its workspace context-initialization approach under the `build-memory` name.
 
 ---
 
@@ -16,11 +18,11 @@ When working with multiple agents on a project spanning weeks or even months, yo
 
 These are not file-management problems, but **memory problems**.
 
-`workspace-init` establishes a lightweight, role-separated, externalized context to build a persistent memory layer, ensuring every agent works on the same shared context.
+`build-memory` establishes a lightweight, role-separated, externalized context to build a persistent memory layer, ensuring every agent works on the same shared context.
 
 ---
 
-## 2. What Does workspace-init Do?
+## 2. What Does build-memory Do?
 
 ### Five Key Files
 
@@ -35,6 +37,12 @@ The skill inspects your workspace and creates or refines five key files:
 | `TODO.md` | **User-Led Backlog** — development progress, pending, and completed tasks | Developers, Agents |
 
 Each file has a clear, independent responsibility. This prevents a common failure mode: accumulating all context in a single file until it becomes unreadable.
+
+It also installs a lightweight `.memory/` support directory:
+
+- `.memory/session_log.py`: the recommended writer for `SESSION_LOG.md`, with lock retries, 7-day archival, and structured fields.
+- `.memory/KNOWLEDGE.md`: long-term reusable lessons and durable decisions, read on demand only.
+- `.memory/sessions/`: archived daily session logs older than the recent window.
 
 ### Principles
 
@@ -67,7 +75,9 @@ This is achieved by specifying the following rules in `AGENTS.md` and `CLAUDE.md
 ```markdown
 ## Tracking Files
 
-- `SESSION_LOG.md`: Append brief session-level entries under the latest date after file changes or when leaving unresolved issues. Multiple related changes can be aggregated under a single timestamp.
+- `SESSION_LOG.md`: Recent 7-day collaboration log. Use `python .memory/session_log.py` to append notes; do not edit it manually.
+- `.memory/KNOWLEDGE.md`: Long-term reusable lessons and decisions; read only when the task likely depends on project history.
+- `.memory/sessions/`: Archived daily logs older than the recent window; do not read by default.
 - `TODO.md`: A user-led task board tracking important project items. Read on-demand; edits require user consent.
 - `CHANGELOG.md`: Release-oriented change log. Update during release-related changes or milestone tracking.
 ```
@@ -95,11 +105,11 @@ Easily ask the agent to read `SESSION_LOG.md` to summarize the project's progres
 
 ## 4. Skill Workflow
 
-What happens under the hood when you run `/workspace-init`?
+What happens under the hood when you run `/build-memory`?
 
 ```mermaid
 flowchart TD
-    A["User runs /workspace-init"] --> B{"Select Language"}
+    A["User runs /build-memory"] --> B{"Select Language"}
     B --> |"Use Chinese"| C["Target Language: Chinese"]
     B --> |"Use English"| D["Target Language: English"]
     B --> |"Bare Invocation"| E["Ask User for Language Preference"]
@@ -243,14 +253,14 @@ flowchart LR
 
 ## 6. Installation
 
-This skill adheres to the cross-agent `SKILL.md` standard. The same folder can be used in Claude Code, Codex, Cursor, and Google Antigravity. Simply place the `workspace-init/` folder into the skills directory corresponding to each tool.
+This skill adheres to the cross-agent `SKILL.md` standard. The same folder can be used in Claude Code, Codex, Cursor, and Google Antigravity. Simply place the `build-memory/` folder into the skills directory corresponding to each tool.
 
 ### Claude Code
 
 | Scope | Path | Availability |
 |------|------|----------|
-| Personal (Recommended) | `~/.claude/skills/workspace-init/` | All projects |
-| Project | `<repo>/.claude/skills/workspace-init/` | Current repository only |
+| Personal (Recommended) | `~/.claude/skills/build-memory/` | All projects |
+| Project | `<repo>/.claude/skills/build-memory/` | Current repository only |
 
 On Windows, `~` resolves to `C:\Users\<username>`.
 
@@ -258,8 +268,8 @@ On Windows, `~` resolves to `C:\Users\<username>`.
 
 | Scope | Path | Availability |
 |------|------|----------|
-| Global | `~/.codex/skills/workspace-init/` | All projects |
-| Project | `<repo>/.agents/skills/workspace-init/` | Current repository only |
+| Global | `~/.codex/skills/build-memory/` | All projects |
+| Project | `<repo>/.agents/skills/build-memory/` | Current repository only |
 
 The `CODEX_HOME` environment variable can override `~/.codex`. Restart Codex after adding.
 
@@ -267,7 +277,7 @@ The `CODEX_HOME` environment variable can override `~/.codex`. Restart Codex aft
 
 | Scope | Path | Availability |
 |------|------|----------|
-| Project (Recommended) | `<repo>/.cursor/skills/workspace-init/` | Current repository only |
+| Project (Recommended) | `<repo>/.cursor/skills/build-memory/` | Current repository only |
 
 The global `~/.cursor/skills/` directory is not officially confirmed by documentation; project scope is a reliable choice. Reload the workspace after adding (`Cmd/Ctrl+Shift+P → Developer: Reload Window`).
 
@@ -275,18 +285,27 @@ The global `~/.cursor/skills/` directory is not officially confirmed by document
 
 | Scope | Path | Availability |
 |------|------|----------|
-| Global | `~/.gemini/antigravity/skills/workspace-init/` | All projects |
-| Workspace | `<workspace-root>/.agent/skills/workspace-init/` | Current workspace only |
+| Global | `~/.gemini/antigravity/skills/build-memory/` | All projects |
+| Workspace | `<workspace-root>/.agent/skills/build-memory/` | Current workspace only |
 
 ### Verifying Installation
 
 After copying, the directory structure should look like this:
 
 ```
-<install-root>/workspace-init/
+<install-root>/build-memory/
 ├── SKILL.md
 ├── README.md
 ├── assets/
+│   ├── .memory/
+│   │   ├── session_log.py
+│   │   ├── KNOWLEDGE.md
+│   │   └── sessions/
+│   ├── AGENTS.md
+│   ├── CLAUDE.md
+│   ├── SESSION_LOG.md
+│   ├── TODO.md
+│   └── CHANGELOG.md
 └── reference/
 ```
 
@@ -301,7 +320,7 @@ The folder must directly contain `SKILL.md` — do not nest it under an extra di
 In Claude Code or Codex, run:
 
 ```
-/workspace-init
+/build-memory
 ```
 
 The skill will take over the process; you only need to answer its confirmation questions.
@@ -344,7 +363,7 @@ The skill concludes with a concise report:
 
 ### Ongoing Maintenance
 
-When the project changes (e.g., new test frameworks, new build commands), re-run `/workspace-init`:
+When the project changes (e.g., new test frameworks, new build commands), re-run `/build-memory`:
 
 **The skill compares existing files against specifications and classifies each gap:**
 

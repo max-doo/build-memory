@@ -1,14 +1,15 @@
 ---
-name: workspace-init
-description: Initialize or refine agent workspace tracking and rule files. Use when (1) the user runs `/workspace-init` or asks to initialize a workspace, (2) creating or updating AGENTS.md / CLAUDE.md / CHANGELOG.md / SESSION_LOG.md / TODO.md, (3) auditing existing rule or tracking files for quality issues, (4) adding missing managed files to a project, (5) the user asks about workspace conventions, session logs, backlogs, or changelogs.
+name: build-memory
+description: Initialize or refine agent workspace tracking and rule files. Use when (1) the user runs `/build-memory` or asks to initialize a workspace, (2) creating or updating AGENTS.md / CLAUDE.md / CHANGELOG.md / SESSION_LOG.md / TODO.md, (3) auditing existing rule or tracking files for quality issues, (4) adding missing managed files to a project, (5) the user asks about workspace conventions, session logs, backlogs, or changelogs.
 ---
 
-# Workspace Initialization
+# Build Memory
 
-Create or refine five managed files at the project root: `AGENTS.md`, `CLAUDE.md`, `CHANGELOG.md`, `SESSION_LOG.md`, `TODO.md`.
+Create or refine five managed files at the project root: `AGENTS.md`, `CLAUDE.md`, `CHANGELOG.md`, `SESSION_LOG.md`, `TODO.md`, plus the lightweight `.memory/` support directory for stable session-log writes and long-term lessons.
 
-Three non-negotiable rules:
+Four non-negotiable rules:
 - **Single Source of Truth.** All generic project rules, commands, and tech stack MUST be written in `AGENTS.md`. `CLAUDE.md` serves only as a minimalist entry point and MUST include a `@AGENTS.md` reference. Do NOT duplicate specific commands or rules in `CLAUDE.md`.
+- **Scripted session writes.** Agents SHOULD append session notes with `python .memory/session_log.py` instead of manually editing `SESSION_LOG.md`; the script handles locking, 7-day archival, and structured formatting.
 - **No silent rewrites.** Never overwrite or delete existing content without explicit user approval.
 - **Real time.** Before writing any timestamp into a managed file, obtain the current date/time from the system via a shell command (`date`, `date -Iseconds`, `Get-Date`, etc.). Do not invent timestamps from memory.
 
@@ -21,7 +22,7 @@ Templates ship in English only under `assets/`. Translate to the target language
 For files being **created**:
 - **Explicit directive** ("use English", "用中文", "create in Japanese") → that language.
 - **Substantive user input** (instructions or context beyond a bare invocation, in any language) → detect the language of that content.
-- **Bare invocation** (just `/workspace-init`, "init workspace", or similar with no further requirements) → **ASK the user** which language. Do not guess.
+- **Bare invocation** (just `/build-memory`, "init workspace", or similar with no further requirements) → **ASK the user** which language. Do not guess.
 
 For files being **refined**, keep the existing file's language; do not translate.
 
@@ -35,7 +36,7 @@ Before any write, gather facts:
 
 **Empty workspace detection.** If the inspection finds no source directory, no package manifest (`package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, etc.), no build/test config (`Makefile`, `tsconfig.json`, …), and no CI configuration — i.e. only `.git`, README, license, or dotfiles — STOP before writing any managed file. Ask the user to choose:
 
-1. Skip workspace init for now.
+1. Skip build-memory for now.
 2. Describe the planned project (language, framework, intent) so meaningful defaults can be filled in.
 3. Create minimal scaffold files with prominent `TODO: empty workspace` markers and a leading comment noting the workspace was empty at init time.
 
@@ -43,13 +44,15 @@ Do not auto-fill placeholders in an empty workspace; the resulting noise outweig
 
 Never invent commands or paths. If a placeholder cannot be filled from the repo, leave a `TODO: confirm` marker and tell the user.
 
-### 3. Create missing files
+### 3. Create missing files and memory support
 
 For each missing file:
 1. Read the English template at `assets/<filename>`.
 2. Translate fixed text (headings, comments, labels) into the target language.
 3. Substitute placeholders with verified facts from Step 2.
 4. Write to the project root.
+
+Also copy the support directory from `assets/.memory/` to the project root as `.memory/` when it is missing. Do not overwrite an existing `.memory/session_log.py` or `.memory/KNOWLEDGE.md` without explicit approval.
 
 | File | Role | Target |
 |------|------|--------|
@@ -58,6 +61,8 @@ For each missing file:
 | `CHANGELOG.md` | Release-facing; version-level entries only | — |
 | `SESSION_LOG.md` | Agent operational log; per-session timestamped entries | — |
 | `TODO.md` | User-governed backlog; `Pending` / `Done` only (no `In progress`) | — |
+| `.memory/session_log.py` | Recommended session-log writer with lock retries, 7-day archival, and lesson candidate hints | — |
+| `.memory/KNOWLEDGE.md` | Long-term reusable lessons and durable decisions; read on demand only | — |
 
 ### 4. Refine existing files
 
@@ -90,6 +95,7 @@ End with a concise report: **created**, **refined**, **left alone**, **pending d
 ## Assets and references
 
 - `assets/<filename>` — English templates for the five managed files.
+- `assets/.memory/` — support script, long-term knowledge template, and archive directory placeholder.
 - `reference/tracking-files-guide.md` — full rules for `CHANGELOG.md`, `SESSION_LOG.md`, `TODO.md`.
   - §2 CHANGELOG: release-facing, version-level timestamps, when to create
   - §3 SESSION_LOG: agent operational log, per-session entries, bugfix context

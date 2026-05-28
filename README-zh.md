@@ -1,6 +1,8 @@
-# workspace-init — 建立跨 Agent 的项目记忆层
+# build-memory — 建立跨 Agent 的项目记忆层
 
 > **保存上下文，外化记忆，让 Agent 之间、人与 Agent 之间相互对齐。**
+
+> 本项目 fork 自原 `workspace-init` 项目，并在 `build-memory` 名称下延续其工作区上下文初始化思路。
 
 ---
 
@@ -16,11 +18,11 @@
 
 这些不是文件管理问题，而是**记忆问题**。
 
-`workspace-init` 通过建立一套轻量、职责分明的文件外化上下文，建立持久的记忆层，每个 Agent 都基于同样的共享上下文工作。
+`build-memory` 通过建立一套轻量、职责分明的文件外化上下文，建立持久的记忆层，每个 Agent 都基于同样的共享上下文工作。
 
 ---
 
-## 二、workspace-init 做了什么？
+## 二、build-memory 做了什么？
 
 ### 五个关键文件
 
@@ -35,6 +37,12 @@ Skill 会检查你的工作区并创建或完善五个文件：
 | `TODO.md` | **用户主导的待办清单**——开发进度、待办及已完成事项 | 开发者、Agent |
 
 每个文件有清晰、独立的职责。这避免了常见的失败模式：一个文件堆积所有内容，直到变得不可读。
+
+同时会安装一个轻量 `.memory/` 支撑目录：
+
+- `.memory/session_log.py`：`SESSION_LOG.md` 的推荐写入脚本，包含锁重试、7 天归档和结构化字段。
+- `.memory/KNOWLEDGE.md`：长期可复用经验和稳定决策，仅按需读取。
+- `.memory/sessions/`：超过最近窗口的每日归档日志。
 
 ### 原则
 
@@ -69,7 +77,9 @@ Skill 从不虚构内容。它首先检查你的项目：
 ```markdown
 ## 跟踪文件
 
-- `SESSION_LOG.md`：在文件变更或留下未解决事项后在最新的日期下追加简短的会话级条目；同一时间戳可聚合多条相关更改。
+- `SESSION_LOG.md`：最近 7 天协作日志。使用 `python .memory/session_log.py` 追加记录；不要手工编辑。
+- `.memory/KNOWLEDGE.md`：长期可复用经验和决策；仅在任务明显依赖项目历史时读取。
+- `.memory/sessions/`：超过最近窗口的每日归档日志；默认不读取。
 - `TODO.md`：用户主导的任务看板，记录项目重要待办事项；按需读取，若需编辑需征求用户同意。
 - `CHANGELOG.md`：面向发布的变更日志；发布版本相关变更或记录里程碑时更新。
 ```
@@ -102,11 +112,11 @@ Skill 从不虚构内容。它首先检查你的项目：
 
 ## 四、Skill 工作流程
 
-运行 `/workspace-init` 时，skill 内部是如何工作的？
+运行 `/build-memory` 时，skill 内部是如何工作的？
 
 ```mermaid
 flowchart TD
-    A["用户输入 /workspace-init"] --> B{"选择语言"}
+    A["用户输入 /build-memory"] --> B{"选择语言"}
     B --> |"用中文"| C["目标语言: 中文"]
     B --> |"use English"| D["目标语言: 英文"]
     B --> |"bare invocation"| E["询问用户语言偏好"]
@@ -250,14 +260,14 @@ flowchart LR
 
 ## 六、安装
 
-本 Skill 遵循跨 Agent 的 `SKILL.md` 标准，同一文件夹可在 Claude Code、Codex、Cursor 和 Google Antigravity 中使用。将 `workspace-init/` 文件夹放入各工具对应的 skills 目录即可。
+本 Skill 遵循跨 Agent 的 `SKILL.md` 标准，同一文件夹可在 Claude Code、Codex、Cursor 和 Google Antigravity 中使用。将 `build-memory/` 文件夹放入各工具对应的 skills 目录即可。
 
 ### Claude Code
 
 | 范围 | 路径 | 可用范围 |
 |------|------|----------|
-| 个人（推荐） | `~/.claude/skills/workspace-init/` | 所有项目 |
-| 项目 | `<repo>/.claude/skills/workspace-init/` | 仅当前仓库 |
+| 个人（推荐） | `~/.claude/skills/build-memory/` | 所有项目 |
+| 项目 | `<repo>/.claude/skills/build-memory/` | 仅当前仓库 |
 
 Windows 上 `~` 解析为 `C:\Users\<用户名>`。
 
@@ -265,8 +275,8 @@ Windows 上 `~` 解析为 `C:\Users\<用户名>`。
 
 | 范围 | 路径 | 可用范围 |
 |------|------|----------|
-| 全局 | `~/.codex/skills/workspace-init/` | 所有项目 |
-| 项目 | `<repo>/.agents/skills/workspace-init/` | 仅当前仓库 |
+| 全局 | `~/.codex/skills/build-memory/` | 所有项目 |
+| 项目 | `<repo>/.agents/skills/build-memory/` | 仅当前仓库 |
 
 `CODEX_HOME` 环境变量可覆盖 `~/.codex`。添加后重启 Codex。
 
@@ -274,7 +284,7 @@ Windows 上 `~` 解析为 `C:\Users\<用户名>`。
 
 | 范围 | 路径 | 可用范围 |
 |------|------|----------|
-| 项目（推荐） | `<repo>/.cursor/skills/workspace-init/` | 仅当前仓库 |
+| 项目（推荐） | `<repo>/.cursor/skills/build-memory/` | 仅当前仓库 |
 
 全局 `~/.cursor/skills/` 目录尚未被官方文档确认；项目范围是可靠的选择。添加后重载工作区（`Cmd/Ctrl+Shift+P → Developer: Reload Window`）。
 
@@ -282,18 +292,27 @@ Windows 上 `~` 解析为 `C:\Users\<用户名>`。
 
 | 范围 | 路径 | 可用范围 |
 |------|------|----------|
-| 全局 | `~/.gemini/antigravity/skills/workspace-init/` | 所有项目 |
-| 工作区 | `<workspace-root>/.agent/skills/workspace-init/` | 仅当前工作区 |
+| 全局 | `~/.gemini/antigravity/skills/build-memory/` | 所有项目 |
+| 工作区 | `<workspace-root>/.agent/skills/build-memory/` | 仅当前工作区 |
 
 ### 验证安装
 
 复制完成后，目录结构应如下：
 
 ```
-<install-root>/workspace-init/
+<install-root>/build-memory/
 ├── SKILL.md
 ├── README.md
 ├── assets/
+│   ├── .memory/
+│   │   ├── session_log.py
+│   │   ├── KNOWLEDGE.md
+│   │   └── sessions/
+│   ├── AGENTS.md
+│   ├── CLAUDE.md
+│   ├── SESSION_LOG.md
+│   ├── TODO.md
+│   └── CHANGELOG.md
 └── reference/
 ```
 
@@ -308,7 +327,7 @@ Windows 上 `~` 解析为 `C:\Users\<用户名>`。
 在 Claude Code 或 Codex 中运行：
 
 ```
-/workspace-init
+/build-memory
 ```
 
 Skill 会接管后续流程，你只需要回答它的确认问题。
@@ -351,7 +370,7 @@ Skill 以简洁的报告结束：
 
 ### 日常维护
 
-当项目发生变化（新的测试框架、新的构建命令）时，重新运行 `/workspace-init`：
+当项目发生变化（新的测试框架、新的构建命令）时，重新运行 `/build-memory`：
 
 **Skill 将现有文件与规范对比，对每个差距分类：**
 

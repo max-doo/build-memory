@@ -1,5 +1,5 @@
 ---
-name: build-memory-zh
+name: build-memory
 description: 初始化或完善 agent 工作空间的跟踪与规则文件。适用场景：(1) 用户运行 `/build-memory` 或要求初始化工作空间；(2) 创建或更新 AGENTS.md / CLAUDE.md / CHANGELOG.md / SESSION_LOG.md / TODO.md；(3) 审计已有的规则或跟踪文件以发现质量问题；(4) 为项目补齐缺失的受管文件；(5) 用户询问工作空间约定、会话日志、待办、变更日志相关问题。
 ---
 
@@ -80,6 +80,7 @@ description: 初始化或完善 agent 工作空间的跟踪与规则文件。适
      - §2 CLAUDE.md 生成指南
      - §3 差异化写法（AGENTS.md 与 CLAUDE.md）
      - §6 附录：内容决策对照表
+   - 如果存在 `.memory/KNOWLEDGE.md`，且正在创建或完善 `AGENTS.md` 的“已知坑点”，读取该文件并判断是否有经验值得提升。只有跨任务反复出现、误用代价高、无法从代码结构直接看出、可写成一句明确操作规则的经验才提升到 `AGENTS.md`；其余继续留在 `KNOWLEDGE.md`。
 3. 分类差异（**强制严格审计，拒绝妥协**）：
    - **小问题** — 仅限于极轻微的措辞修订、明显过期的单行命令修正、无害的微小冗余。可以直接编辑。
    - **大问题** — 结构与规范不符（如 `AGENTS.md` 缺少必要的章节或规则违背单点事实来源）、文件角色错误（如 `CLAUDE.md` 包含具体命令而非只引用 `@AGENTS.md`）、文件长度超过推荐值的 2 倍、`TODO.md` 包含“进行中”区块，或 `CHANGELOG.md` 被用作日常日志。

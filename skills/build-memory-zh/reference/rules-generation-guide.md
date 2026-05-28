@@ -24,6 +24,7 @@
 
 **第五步：识别容易踩坑的模式（Failure Modes）**
 记录 Agent 或新成员容易犯错的地方。例如：包管理器的错误选择、忘记更新 schema、破坏 monorepo 边界、漏掉 feature flag。防患于未然。
+Agent 可以从 `.memory/KNOWLEDGE.md` 中判断哪些经验值得提升到 `AGENTS.md`，但必须满足四个条件：跨任务反复出现、误用代价高、无法从代码结构直接看出、可写成一句明确操作规则。不满足这些条件的经验应继续留在 `.memory/KNOWLEDGE.md`，不要扩大默认上下文。
 
 **第六步：利用跟踪文件外化记忆**
 配置 Agent 使用 `SESSION_LOG.md` 记录协作日记，使用 `TODO.md` 同步进度。这解决了多个会话间信息隔离的痛点。
@@ -44,6 +45,7 @@
 | 每次开工都需要的稳定事实与约束 | 只和某个临时任务相关的细节 |
 | 无法直接从代码猜出的开发与测试命令 | 把 package.json 里所有脚本抄一遍 |
 | 项目特有的架构限制与坑点 (Gotchas) | “请编写高质量且易于维护的代码” |
+| 从 `KNOWLEDGE.md` 提升出的高频、高风险、可执行经验 | 普通调试流水、一次性事故复盘 |
 | 对追踪文件（SESSION_LOG / TODO）的使用规定 | API Key、真实生产环境的 Token |
 | 指向具体细则文档的链接引用（如 `@docs/testing.md`） | 冗长复杂的单任务流程、框架常识 |
 
@@ -106,8 +108,8 @@ IMPORTANT: Use `<package-manager>` for dependency operations. Do not use `<disal
 - `CHANGELOG.md`: release-facing changelog; only update for release-relevant changes.
 
 ## Known Gotchas
-- `<gotcha 1>`
-- `<gotcha 2>`
+- Keep only high-frequency gotchas that must be followed every session here, ideally 3-7 bullets.
+- Agents may promote lessons from `.memory/KNOWLEDGE.md` into this section when they are recurring across tasks, costly when missed, not obvious from code structure, and expressible as one concrete operating rule.
 ```
 
 ### 3.2 极简入口：`CLAUDE.md` 模板

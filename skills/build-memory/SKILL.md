@@ -80,6 +80,7 @@ For each existing managed file:
      - §2 CLAUDE.md generation guide
      - §3 Differential writing (AGENTS.md vs CLAUDE.md)
      - §6 Appendix: content decision table
+   - If `.memory/KNOWLEDGE.md` exists and you are creating or refining the `Known Gotchas` section in `AGENTS.md`, read it and decide whether any lessons deserve promotion. Promote only lessons that recur across tasks, are costly when missed, are not obvious from code structure, and can be written as one concrete operating rule; keep everything else in `KNOWLEDGE.md`.
 3. Classify the gap (**Strict Audit, No Compromises**):
    - **Minor** — strict wording fixes, clearly stale commands, or harmless micro-extras. Edit in place.
    - **Major** — structural non-compliance (e.g. `AGENTS.md` missing required sections or violating single source of truth), wrong file role (e.g. `CLAUDE.md` contains full commands instead of referencing `@AGENTS.md`), file >2× recommended length, `TODO.md` containing "In progress" sections, or `CHANGELOG.md` used as a daily log.

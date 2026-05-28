@@ -24,6 +24,7 @@ Only record conventions that are "project-specific" or "easy to get wrong". Chec
 
 **Step 5: Identify Failure Modes & Gotchas**
 Record areas where agents or new team members commonly make mistakes (e.g., wrong package manager, failing to update a schema, breaking monorepo boundaries, missing a feature flag).
+Agents may decide which lessons from `.memory/KNOWLEDGE.md` deserve promotion into `AGENTS.md`, but the lesson must satisfy four criteria: it recurs across tasks, is costly when missed, is not obvious from code structure, and can be written as one concrete operating rule. Lessons that do not meet these criteria should stay in `.memory/KNOWLEDGE.md` instead of expanding the default context.
 
 **Step 6: Externalize Memory via Tracking Files**
 Configure the agent to maintain collaboration journals in `SESSION_LOG.md` and synchronize progress in `TODO.md`. This bridges the isolation gap between multiple sessions.
@@ -44,6 +45,7 @@ When authoring rules, adhere to the following table:
 | Stable facts and constraints needed every session | Details relevant only to a transient task |
 | Commands that can't be easily guessed | Copy-pasting every single script from package.json |
 | Project-specific architecture constraints and gotchas | "Please write high-quality and maintainable code" |
+| High-frequency, high-risk, actionable lessons promoted from `KNOWLEDGE.md` | Ordinary debugging logs or one-off incident recaps |
 | Rules for using tracking files (SESSION_LOG / TODO) | API keys, actual production tokens |
 | `@`-references to detailed rule docs (e.g., `@docs/testing.md`) | Long, complex single-task workflows |
 
@@ -106,8 +108,8 @@ IMPORTANT: Use `<package-manager>` for dependency operations. Do not use `<disal
 - `CHANGELOG.md`: release-facing changelog; only update for release-relevant changes.
 
 ## Known Gotchas
-- `<gotcha 1>`
-- `<gotcha 2>`
+- Keep only high-frequency gotchas that must be followed every session here, ideally 3-7 bullets.
+- Agents may promote lessons from `.memory/KNOWLEDGE.md` into this section when they are recurring across tasks, costly when missed, not obvious from code structure, and expressible as one concrete operating rule.
 ```
 
 ### 3.2 The Minimalist Entry: `CLAUDE.md`

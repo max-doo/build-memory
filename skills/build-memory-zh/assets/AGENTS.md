@@ -54,7 +54,8 @@ IMPORTANT：依赖操作使用 `<package-manager>`，不要使用 `<disallowed-p
 
 ## 工作规则
 
-- 先探索：编辑前阅读相关文件与已有测试。
+- 先探索：处理重大变更时，先检查相关文件与已有测试，提出简短计划，然后再编辑。
+- 面对大范围重构、迁移、架构变更或涉及超过 5 个文件的任务时，请使用规划模式 (Plan Mode)。
 - 改动范围限于请求的任务。
 - 新增生产依赖前需确认。
 - 实现类任务以以下内容收尾：变更文件、变更内容、已运行的验证命令、待跟进事项。
@@ -93,17 +94,17 @@ IMPORTANT：依赖操作使用 `<package-manager>`，不要使用 `<disallowed-p
 
 - 时间戳一律用 shell（`date`、`Get-Date`）获取，禁止凭记忆编造；评估 / 方案 / 报告等独立文档在顶部加 `> 创建于：YYYY-MM-DD HH:MM` 一行。
 
-## 跟踪文件
+## 记忆层
 
 - `SESSION_LOG.md`：最近 7 天协作日志；需要近期上下文时可直接读取。
 - 使用 `python .memory/session_log.py` 追加 session 记录；不要手工编辑 `SESSION_LOG.md`。脚本会自动处理当前时间、文件锁重试、旧日期归档和结构化条目格式。
-- `.memory/KNOWLEDGE.md`：长期可复用经验和决策；仅在处理反复问题、调试、架构决策或当前任务明显依赖项目历史经验时读取。
+- `.memory/KNOWLEDGE.md`：长期可复用经验和决策；仅在处理反复问题、调试、架构决策或当前任务明显依赖项目历史经验时读取。**注意：当你运行 `session_log.py` 脚本后，如果终端输出了 `Consider promoting stable lessons to .memory/KNOWLEDGE.md.` 的提示，你必须立刻主动将这些 lessons 提炼并追加到 `.memory/KNOWLEDGE.md` 中。**
 - `.memory/sessions/`：超过最近窗口的每日归档日志；默认不读取，除非需要追溯更早历史。
 - `TODO.md`：用户主导、agent 辅助的 backlog；默认不读取或编辑；如果会话结束有待解决的遗留事项可建议用户更新TODO，由用户批准后再应用。
 - `CHANGELOG.md`：面向发布的变更日志；仅在用户可见或发布相关变更时更新。
 
 ## 已知坑点
 
-- `<gotcha 1>`
-- `<gotcha 2>`
-- `<gotcha 3>`
+- 高频、必须始终遵守的坑点写在这里，保持 3-7 条以内。
+- 可将 `.memory/KNOWLEDGE.md` 中满足以下条件的经验提升到本节：跨任务反复出现、误用代价高、无法从代码结构直接看出、可写成一句明确操作规则。
+- 其余长期经验、调试记录和稳定决策保留在 `.memory/KNOWLEDGE.md`；处理反复问题、调试、架构决策或明显依赖项目历史经验的任务时先读取该文件。

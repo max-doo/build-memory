@@ -4,6 +4,4 @@ Please read @AGENTS.md for all repository guidelines, tech stack, commands, and 
 
 ## Claude Code specific instructions
 
-- Use `/clear` between unrelated tasks.
-- For non-trivial changes, first inspect relevant files, then propose a short plan, then edit.
-- Use Plan Mode for broad refactors, migrations, architecture changes, or tasks touching more than 5 files.
+<!-- Add any Claude-specific system instructions here if needed. Generally, all universal agent rules should be placed in AGENTS.md. -->

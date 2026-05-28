@@ -54,7 +54,8 @@ IMPORTANT: Use `<package-manager>` for dependency operations. Do not use `<disal
 
 ## Working Rules
 
-- Explore first: read the relevant files and existing tests before editing.
+- Explore first: For non-trivial changes, first inspect relevant files and existing tests, then propose a short plan, then edit.
+- Use Plan Mode for broad refactors, migrations, architecture changes, or tasks touching more than 5 files.
 - Keep changes scoped to the requested task.
 - Ask before adding new production dependencies.
 - End implementation tasks with: changed files, what changed, validation commands run, and any follow-up items.
@@ -93,17 +94,17 @@ A session or task is considered complete when:
 
 - Obtain timestamps from the shell (`date`, `Get-Date`); never invent them. Standalone documents (reports, plans, assessments) carry a `> Created: YYYY-MM-DD HH:MM` line near the top.
 
-## Tracking Files
+## Memory Layer
 
 - `SESSION_LOG.md`: recent 7-day collaboration log. Read it directly when recent context is needed.
 - Use `python .memory/session_log.py` to append session notes; do not edit `SESSION_LOG.md` manually. The script handles current time, file-lock retries, old-date archival, and structured entry formatting.
-- `.memory/KNOWLEDGE.md`: long-term reusable lessons and decisions. Read it only for recurring issues, debugging, architecture decisions, or when the current task likely depends on prior project experience.
+- `.memory/KNOWLEDGE.md`: long-term reusable lessons and decisions. Read it only for recurring issues, debugging, architecture decisions, or when the current task likely depends on prior project experience. **NOTE: After running the `session_log.py` script, if the terminal outputs the prompt `Consider promoting stable lessons to .memory/KNOWLEDGE.md.`, you MUST immediately read those lessons and proactively extract and append them to `.memory/KNOWLEDGE.md`.**
 - `.memory/sessions/`: archived daily session logs older than the recent window. Do not read by default unless tracing older history.
 - `TODO.md`: user-governed, agent-assisted backlog; do not read or edit by default; if a session ends with unresolved items, suggest the user update TODO and apply changes only after user approval.
 - `CHANGELOG.md`: release-facing changelog; only update for user-visible or release-relevant changes.
 
 ## Known Gotchas
 
-- `<gotcha 1>`
-- `<gotcha 2>`
-- `<gotcha 3>`
+- Keep only high-frequency gotchas that must be followed every session here, ideally 3-7 bullets.
+- Promote lessons from `.memory/KNOWLEDGE.md` into this section when they are recurring across tasks, costly when missed, not obvious from code structure, and expressible as one concrete operating rule.
+- Keep other long-term lessons, debugging notes, and stable decisions in `.memory/KNOWLEDGE.md`; read that file first for recurring issues, debugging, architecture decisions, or tasks that clearly depend on prior project history.

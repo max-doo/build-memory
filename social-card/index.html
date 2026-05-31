@@ -1,0 +1,1151 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="ink-classic">
+<head>
+  <meta charset="utf-8">
+  <title>[必填] 替换为社交卡组标题 · Social Card Set</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <style>
+    /* =========================================================
+       Editorial Magazine × E-ink — Social Card Seed Template
+       ---------------------------------------------------------
+       Three boards built in one HTML:
+         .poster.xhs      1080×1440  (3:4   小红书)
+         .poster.square   1080×1080  (1:1   微信方封面)
+         .poster.wide     2100× 900  (21:9  微信主封面)
+         .pair-preview                       21:9 + 1:1 配对预览
+
+       Theme switching via <html data-theme="…">:
+         ink-classic | indigo-porcelain | forest-ink | kraft-paper | dune | midnight-ink
+
+       Fill posters where marked <!-- POSTERS_HERE -->.
+       Each poster carries one Layout Recipe (M01-M15) from
+       references/layout-recipes.md.
+       ========================================================= */
+
+    /* ---------- 1. Theme tokens ---------- */
+    :root,
+    [data-theme="ink-classic"] {
+      --paper:     #f3f0e8;
+      --paper-2:   #ebe6da;
+      --ink:       #0a0a0b;
+      --muted:     #68625a;
+      --line:      rgba(10,10,11,.22);
+      --accent:    #111111;
+      --accent-soft: #d8d2c6;
+      --ink-rgb: 10,10,11;
+      --paper-rgb: 243,240,232;
+      --accent-rgb: 17,17,17;
+    }
+    [data-theme="indigo-porcelain"] {
+      --paper:     #f2f4f5;
+      --paper-2:   #e5ebef;
+      --ink:       #0a1f3d;
+      --muted:     #5f6d78;
+      --line:      rgba(10,31,61,.20);
+      --accent:    #315d93;
+      --accent-soft: #d7e1ec;
+      --ink-rgb: 10,31,61;
+      --paper-rgb: 242,244,245;
+      --accent-rgb: 49,93,147;
+    }
+    [data-theme="forest-ink"] {
+      --paper:     #f5f1e8;
+      --paper-2:   #e8dfcf;
+      --ink:       #16251b;
+      --muted:     #5d665d;
+      --line:      rgba(22,37,27,.22);
+      --accent:    #2e6b4f;
+      --accent-soft: #d4dfd2;
+      --ink-rgb: 22,37,27;
+      --paper-rgb: 245,241,232;
+      --accent-rgb: 46,107,79;
+    }
+    [data-theme="kraft-paper"] {
+      --paper:     #eedfc7;
+      --paper-2:   #dfc9a8;
+      --ink:       #2a1e13;
+      --muted:     #755f49;
+      --line:      rgba(42,30,19,.24);
+      --accent:    #9b5a2e;
+      --accent-soft: #d5b58f;
+      --ink-rgb: 42,30,19;
+      --paper-rgb: 238,223,199;
+      --accent-rgb: 155,90,46;
+    }
+    [data-theme="dune"] {
+      --paper:     #f0e6d2;
+      --paper-2:   #ded0b7;
+      --ink:       #1f1a14;
+      --muted:     #6f6557;
+      --line:      rgba(31,26,20,.22);
+      --accent:    #8f7650;
+      --accent-soft: #d4c2a4;
+      --ink-rgb: 31,26,20;
+      --paper-rgb: 240,230,210;
+      --accent-rgb: 143,118,80;
+    }
+    /* Midnight Ink — the ONLY official dark Editorial palette.
+       Use for game key art, night scenes, dark photography, cinematic covers.
+       Do not improvise other dark backgrounds. */
+    [data-theme="midnight-ink"] {
+      --paper:     #0e0d0c;
+      --paper-2:   #1a1714;
+      --ink:       #ece2cf;
+      --muted:     #9a8c75;
+      --line:      rgba(236,226,207,.22);
+      --accent:    #d4a04a;
+      --accent-soft: #3a2a14;
+      --ink-rgb: 236,226,207;
+      --paper-rgb: 14,13,12;
+      --accent-rgb: 212,160,74;
+    }
+
+    /* ---------- 2. Typography stack ---------- */
+    :root {
+      --serif-zh: "Noto Serif SC", "Songti SC", "STSong", serif;
+      --serif-en: "Playfair Display", "Noto Serif SC", serif;
+      --sans-zh: "Noto Sans SC", -apple-system, "PingFang SC", "Microsoft YaHei UI", sans-serif;
+      --sans-en: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Consolas, monospace;
+    }
+
+    /* ---------- 3. Reset & sheet ---------- */
+    *,*::before,*::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: #1a1a1a;
+      font-family: var(--sans-zh);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      padding: 64px 32px;
+    }
+    .sheet {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 48px;
+    }
+
+    /* ---------- 4. Poster boards (fixed export sizes) ---------- */
+    .poster {
+      position: relative;
+      background: var(--paper);
+      color: var(--ink);
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .poster.xhs    { width: 1080px; height: 1440px; }
+    .poster.square { width: 1080px; height: 1080px; }
+    .poster.wide   { width: 2100px; height:  900px; }
+    .poster figure { margin: 0; }
+
+    /* Default content padding by board */
+    .poster.xhs    .content { padding: 96px 88px; }
+    .poster.square .content { padding: 88px 88px; }
+    .poster.wide   .content { padding: 88px 120px; }
+    .content { position: relative; width: 100%; height: 100%; z-index: 2; }
+
+    /* ---------- 5. Background layers (paper grain + WebGL) ---------- */
+    .mag-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .grain {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: .35;
+      mix-blend-mode: multiply;
+      background-image: radial-gradient(rgba(0,0,0,.045) 1px, transparent 1px);
+      background-size: 3px 3px;
+    }
+    .paper-wash {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(var(--ink-rgb),.02), rgba(var(--ink-rgb),.05) 60%, rgba(var(--ink-rgb),.08));
+    }
+    /* Midnight Ink — flip grain to screen-mode warm specks, paper-wash to
+       gilt + shadow vignette. Light-paper math doesn't carry over. */
+    [data-theme="midnight-ink"] .grain {
+      opacity: .26;
+      mix-blend-mode: screen;
+      background-image: radial-gradient(rgba(255,244,214,.10) 1px, transparent 1px);
+    }
+    [data-theme="midnight-ink"] .paper-wash {
+      background:
+        radial-gradient(80% 50% at 28% 16%, rgba(212,160,74,.12), transparent 64%),
+        radial-gradient(70% 60% at 80% 86%, rgba(60,40,20,.20), transparent 72%),
+        linear-gradient(180deg, rgba(236,226,207,.02), rgba(0,0,0,.32));
+    }
+
+    /* ---------- 6. Typography roles ----------
+       Editorial Magazine values restored from demo-showcase/editorial.html:
+       light weights (500 not 900), serif body italic-tolerant, wide tracking
+       on kicker/meta (.20-.22em), positive tracking on display (+.04em).
+       Each card should still INLINE-tune font-size for the specific recipe;
+       these defaults are intentionally restrained, not maximal. */
+    .kicker {
+      font-family: var(--mono);
+      font-size: 21px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: rgba(var(--ink-rgb), .55);
+      margin: 0 0 18px;
+    }
+    .h-display {
+      font-family: var(--serif-zh);
+      font-weight: 500;
+      font-size: 124px;
+      line-height: 1.06;
+      letter-spacing: .04em;
+      margin: 0 0 24px;
+      color: var(--ink);
+    }
+    .h-xl {
+      font-family: var(--serif-zh);
+      font-weight: 500;
+      font-size: 88px;
+      line-height: 1.10;
+      letter-spacing: .03em;
+      margin: 0 0 24px;
+      color: var(--ink);
+    }
+    .h-md {
+      font-family: var(--serif-zh);
+      font-weight: 500;
+      font-size: 56px;
+      line-height: 1.18;
+      letter-spacing: .02em;
+      margin: 0 0 18px;
+      color: var(--ink);
+    }
+    .h-sub {
+      font-family: var(--serif-en);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 36px;
+      color: var(--muted);
+      margin: 0 0 24px;
+    }
+    .lead {
+      font-family: var(--serif-zh);
+      font-weight: 400;
+      font-size: 28px;
+      line-height: 1.55;
+      color: rgba(var(--ink-rgb), .82);
+      margin: 0 0 24px;
+    }
+    .body {
+      font-family: var(--serif-zh);
+      font-weight: 400;
+      font-size: 24px;
+      line-height: 1.65;
+      color: rgba(var(--ink-rgb), .80);
+      margin: 0 0 18px;
+    }
+    .meta {
+      font-family: var(--mono);
+      font-size: 18px;
+      letter-spacing: .20em;
+      text-transform: uppercase;
+      color: rgba(var(--ink-rgb), .55);
+    }
+    .label {
+      font-family: var(--mono);
+      font-size: 18px;
+      letter-spacing: .20em;
+      text-transform: uppercase;
+      color: rgba(var(--ink-rgb), .55);
+    }
+    .pullquote {
+      font-family: var(--serif-zh);
+      font-style: italic;
+      font-weight: 500;
+      font-size: 64px;
+      line-height: 1.28;
+      color: var(--ink);
+      margin: 0;
+    }
+
+    /* Square boards usually need tighter scales */
+    .poster.square .h-display { font-size: 116px; }
+    .poster.square .h-xl      { font-size: 78px; }
+    .poster.square .h-md      { font-size: 48px; }
+    .poster.square .lead      { font-size: 28px; }
+    .poster.square .body      { font-size: 26px; }
+
+    /* Wide boards have horizontal headlines */
+    .poster.wide .h-display   { font-size: 128px; }
+    .poster.wide .h-xl        { font-size: 96px; }
+    .poster.wide .lead        { font-size: 34px; }
+
+    /* ---------- 7. Issue label + page metadata ---------- */
+    .issue-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-family: var(--mono);
+      font-size: 20px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .issue-row .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .issue-strip {
+      position: absolute;
+      left: 88px;
+      right: 88px;
+      bottom: 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 32px;
+      font-family: var(--mono);
+      font-size: 18px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+    }
+    .poster.wide .issue-strip { left: 120px; right: 120px; }
+    .issue-strip span { white-space: nowrap; }
+
+    /* ---------- 8. Layout primitives ---------- */
+    .stack    { display: flex; flex-direction: column; }
+    .gap-1    { gap: 12px; }
+    .gap-2    { gap: 24px; }
+    .gap-3    { gap: 36px; }
+    .gap-4    { gap: 48px; }
+    .gap-5    { gap: 64px; }
+    .row      { display: flex; flex-direction: row; }
+    .col-2    { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+    .col-3    { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; }
+    .col-2-7-5 { display: grid; grid-template-columns: 7fr 5fr; gap: 48px; }
+    .col-2-8-4 { display: grid; grid-template-columns: 8fr 4fr; gap: 48px; }
+    .center   { text-align: center; }
+    .grow     { flex: 1; }
+    .pad-y-md { padding-top: 36px; padding-bottom: 36px; }
+    .rule     { height: 1px; background: var(--line); border: 0; margin: 24px 0; }
+    .rule-accent { height: 2px; background: var(--accent); border: 0; margin: 24px 0; width: 96px; }
+
+    /* ---------- 9. Image containers (standard ratios) ---------- */
+    .frame-img {
+      position: relative;
+      overflow: hidden;
+      background: var(--paper-2);
+      display: block;
+      margin: 0;
+    }
+    .frame-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 50%;
+      display: block;
+    }
+    .frame-img.fit-contain img { object-fit: contain; }
+    [data-theme="midnight-ink"] .frame-img {
+      background: #18120f;
+      box-shadow: 0 0 0 1px rgba(236,226,207,.10);
+    }
+    .frame-img.r-3x4   { aspect-ratio: 3 / 4; }
+    .frame-img.r-1x1   { aspect-ratio: 1 / 1; }
+    .frame-img.r-4x3   { aspect-ratio: 4 / 3; }
+    .frame-img.r-16x9  { aspect-ratio: 16 / 9; }
+    .frame-img.r-16x10 { aspect-ratio: 16 / 10; }
+    .frame-img.r-21x9  { aspect-ratio: 21 / 9; }
+    .frame-img.r-3x2   { aspect-ratio: 3 / 2; }
+    .img-cap {
+      font-family: var(--mono);
+      font-size: 20px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 14px;
+    }
+
+    /* ---------- 9b. Screenshot treatment (.frame-shot) ---------- */
+    /* Use for UI screenshots / web captures / code shots. Replaces .frame-img
+       when you need rounded corners, soft shadow, padded inset, or device chrome.
+       Stack: .frame-shot.r-{ratio}.bg-{tone}.inset-{none|sub|bal}.shadow-{none|soft|ed} */
+    .frame-shot {
+      position: relative;
+      overflow: hidden;
+      display: block;
+      margin: 0;
+      background: var(--paper-2);
+      /* default corners — Editorial leans slight rounding to feel like a magazine cutout */
+      border-radius: 6px;
+    }
+    .frame-shot.corners-sq { border-radius: 0; }
+    .frame-shot.corners-sm { border-radius: 6px; }
+    .frame-shot.corners-md { border-radius: 14px; }
+
+    /* shadows — Editorial uses warm low-contrast drop */
+    .frame-shot.shadow-soft { box-shadow: 0 18px 36px -18px rgba(20,18,14,.22), 0 2px 6px rgba(20,18,14,.06); }
+    .frame-shot.shadow-ed   { box-shadow: 0 28px 60px -24px rgba(20,18,14,.32), 0 6px 14px rgba(20,18,14,.08); }
+
+    /* background tones — programmatic, no asset deps */
+    .frame-shot.bg-paper    { background: var(--paper); }
+    .frame-shot.bg-paper-2  { background: var(--paper-2); }
+    .frame-shot.bg-ink      { background: var(--ink); }
+    .frame-shot.bg-grid     {
+      background:
+        linear-gradient(var(--paper-2), var(--paper-2)),
+        repeating-linear-gradient(0deg, var(--line) 0 1px, transparent 1px 48px),
+        repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 48px);
+      background-blend-mode: multiply;
+    }
+    .frame-shot.bg-dot {
+      background-color: var(--paper-2);
+      background-image: radial-gradient(var(--line) 1px, transparent 1px);
+      background-size: 18px 18px;
+    }
+
+    /* asset backgrounds — ported from PPT skill, real texture for screenshot wells */
+    /* path is relative to the deck's index.html — keep seed and final deck in same dir, or override */
+    .frame-shot.bg-asset-dune             { background: #d8c9a8 url("../assets/screenshot-backgrounds/style-a/dune.webp")             center/cover no-repeat; }
+    .frame-shot.bg-asset-forest-ink       { background: #1f2a24 url("../assets/screenshot-backgrounds/style-a/forest-ink.webp")       center/cover no-repeat; }
+    .frame-shot.bg-asset-indigo-porcelain { background: #cfd6dd url("../assets/screenshot-backgrounds/style-a/indigo-porcelain.webp") center/cover no-repeat; }
+    .frame-shot.bg-asset-kraft-paper      { background: #c9a983 url("../assets/screenshot-backgrounds/style-a/kraft-paper.webp")      center/cover no-repeat; }
+    .frame-shot.bg-asset-monocle-classic  { background: #e8e1d4 url("../assets/screenshot-backgrounds/style-a/monocle-classic.webp")  center/cover no-repeat; }
+
+    /* padding wraps the inner shot — content gets to "float" on the bg tone */
+    .frame-shot.inset-none > img,
+    .frame-shot.inset-none > .shot-body { padding: 0; }
+    .frame-shot.inset-sub  { padding: 24px; }
+    .frame-shot.inset-bal  { padding: 56px; }
+
+    /* aspect-ratio reused from .frame-img */
+    .frame-shot.r-3x4   { aspect-ratio: 3 / 4; }
+    .frame-shot.r-1x1   { aspect-ratio: 1 / 1; }
+    .frame-shot.r-4x3   { aspect-ratio: 4 / 3; }
+    .frame-shot.r-16x9  { aspect-ratio: 16 / 9; }
+    .frame-shot.r-16x10 { aspect-ratio: 16 / 10; }
+    .frame-shot.r-21x9  { aspect-ratio: 21 / 9; }
+    .frame-shot.r-3x2   { aspect-ratio: 3 / 2; }
+
+    /* inner img defaults to contain (screenshots must not crop UI) */
+    .frame-shot > img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+      border-radius: inherit;
+    }
+    .frame-shot.fit-cover > img { object-fit: cover; }
+
+    /* device-frame variants (CSS-only chrome, no SVG / images) */
+    .device-browser {
+      position: relative;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .device-browser::before {
+      content: '';
+      display: block;
+      height: 36px;
+      background: var(--paper-2);
+      border-bottom: 1px solid var(--line);
+      background-image:
+        radial-gradient(circle at 18px 18px, #f08080 5px, transparent 5.5px),
+        radial-gradient(circle at 38px 18px, #f5c450 5px, transparent 5.5px),
+        radial-gradient(circle at 58px 18px, #7ec98f 5px, transparent 5.5px);
+    }
+    .device-browser > .frame-shot,
+    .device-browser > img {
+      border-radius: 0;
+      display: block;
+      width: 100%;
+    }
+    .device-phone {
+      position: relative;
+      background: var(--ink);
+      border-radius: 36px;
+      padding: 14px;
+      box-shadow: 0 24px 48px -20px rgba(20,18,14,.42);
+    }
+    .device-phone > .frame-shot,
+    .device-phone > img {
+      border-radius: 24px;
+      display: block;
+      width: 100%;
+    }
+
+    /* ---------- 9c. Map block (.map-block) ---------- */
+    /* Static map container — pure CSS frame, content is either an <img> from
+       Mapbox Static API or an SVG schematic. Pins overlay as absolute children. */
+    .map-block {
+      position: relative;
+      background: var(--paper-2);
+      overflow: hidden;
+      aspect-ratio: 4 / 3;
+      width: 100%;
+    }
+    .map-block.r-16x10 { aspect-ratio: 16 / 10; }
+    .map-block.r-16x9  { aspect-ratio: 16 / 9; }
+    .map-block.r-1x1   { aspect-ratio: 1 / 1; }
+    .map-block.r-3x4   { aspect-ratio: 3 / 4; }
+    .map-block > img,
+    .map-block > svg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      display: block;
+    }
+    .map-block > img { object-fit: cover; }
+    /* tint mapbox / OSM tiles to fit editorial paper tone */
+    .map-block.tone-paper > img { filter: saturate(.36) contrast(.92) brightness(1.04); mix-blend-mode: multiply; }
+    .map-block.tone-ink > img   { filter: saturate(.18) brightness(.62); }
+    /* schematic mode: SVG drawn at viewBox 0 0 100 100, lon/lat pre-mapped to 0-100 */
+    .map-block > svg .map-coast { fill: none; stroke: var(--line); stroke-width: .4; }
+    .map-block > svg .map-road  { fill: none; stroke: var(--muted); stroke-width: .28; stroke-dasharray: 1.2 .8; opacity: .65; }
+    .map-block > svg .map-water { fill: var(--paper-2); }
+    .map-block > svg .map-grid  { stroke: var(--line); stroke-width: .15; opacity: .55; }
+
+    /* pins overlay — positioned by % coordinates */
+    .map-pin {
+      position: absolute;
+      width: 0; height: 0;
+      transform: translate(-50%, -50%);
+    }
+    .map-pin .dot {
+      position: absolute;
+      left: -7px; top: -7px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--ink);
+      border: 2px solid var(--paper);
+      box-shadow: 0 1px 4px rgba(20,18,14,.32);
+    }
+    .map-pin.accent .dot { background: var(--accent); }
+    .map-pin .line {
+      position: absolute;
+      left: 8px; top: 0;
+      width: 32px; height: 1px;
+      background: var(--ink);
+      opacity: .5;
+    }
+    .map-pin.left .line { left: auto; right: 8px; }
+    .map-pin .card {
+      position: absolute;
+      left: 44px; top: -22px;
+      min-width: 86px;
+      padding: 8px 10px;
+      background: rgba(245,241,232,.94);
+      box-shadow: 0 0 0 1px var(--line);
+      border-radius: 2px;
+      white-space: nowrap;
+    }
+    .map-pin.left .card { left: auto; right: 44px; }
+    .map-pin .card .name {
+      font-family: var(--serif-zh);
+      font-size: 16px;
+      line-height: 1.1;
+      color: var(--ink);
+    }
+    .map-pin .card .meta {
+      display: block;
+      margin-top: 4px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .map-pin.accent .card .name { color: var(--accent); }
+
+    .map-legend {
+      position: absolute;
+      left: 14px; bottom: 14px;
+      z-index: 3;
+      background: rgba(245,241,232,.92);
+      padding: 8px 12px;
+      box-shadow: 0 0 0 1px var(--line);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .map-legend.tr { left: auto; right: 14px; top: 14px; bottom: auto; }
+
+    /* ---------- 10. Editorial components ---------- */
+    .callout {
+      border-left: 3px solid var(--accent);
+      padding: 18px 28px;
+      font-family: var(--serif-zh);
+      font-style: italic;
+      font-size: 36px;
+      line-height: 1.35;
+      color: var(--ink);
+      background: var(--paper-2);
+    }
+    .callout .callout-src {
+      display: block;
+      margin-top: 18px;
+      font-style: normal;
+      font-family: var(--mono);
+      font-size: 20px;
+      letter-spacing: .12em;
+      color: var(--muted);
+    }
+
+    .ledger { display: flex; flex-direction: column; }
+    .ledger-row {
+      display: grid;
+      grid-template-columns: 96px 1fr auto;
+      gap: 24px;
+      align-items: baseline;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .ledger-row .ledger-nb {
+      font-family: var(--mono);
+      font-size: 28px;
+      color: var(--accent);
+      letter-spacing: .08em;
+    }
+    .ledger-row .ledger-title {
+      font-family: var(--serif-zh);
+      font-weight: 500;
+      font-size: 42px;
+      letter-spacing: .02em;
+      color: var(--ink);
+    }
+    .ledger-row .ledger-note {
+      font-family: var(--serif-zh);
+      font-weight: 400;
+      font-size: 22px;
+      line-height: 1.55;
+      color: rgba(var(--ink-rgb), .72);
+    }
+
+    .marginalia {
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: 48px;
+    }
+    .marginalia .mg-col {
+      border-left: 1px solid var(--line);
+      padding-left: 24px;
+    }
+    .marginalia .mg-col p {
+      font-family: var(--mono);
+      font-size: 20px;
+      letter-spacing: .04em;
+      color: var(--muted);
+      margin: 0 0 16px;
+    }
+
+    .pipeline-v { display: flex; flex-direction: column; gap: 28px; }
+    .pipeline-v .step {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 28px;
+      align-items: baseline;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--line);
+    }
+    .pipeline-v .step:last-child { border-bottom: 0; }
+    .pipeline-v .step-nb {
+      font-family: var(--mono);
+      font-size: 32px;
+      color: var(--accent);
+    }
+    .pipeline-v .step-title {
+      font-family: var(--serif-zh);
+      font-weight: 500;
+      font-size: 40px;
+      letter-spacing: .02em;
+      margin: 0 0 8px;
+    }
+    .pipeline-v .step-desc {
+      font-family: var(--serif-zh);
+      font-weight: 400;
+      font-size: 24px;
+      line-height: 1.6;
+      color: rgba(var(--ink-rgb), .72);
+      margin: 0;
+    }
+
+    .beforeafter {
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      gap: 32px;
+      height: 100%;
+    }
+    .beforeafter .ba-block {
+      padding: 32px;
+      background: var(--paper-2);
+      border-left: 3px solid var(--accent);
+    }
+    .beforeafter .ba-block.before { opacity: .68; }
+
+    /* ---------- 11. Pair preview frame ---------- */
+    .pair-preview {
+      width: 2400px;
+      min-height: 1180px;
+      background: var(--paper-2);
+      padding: 48px;
+      display: grid;
+      grid-template-columns: 2100px 1080px;
+      grid-template-rows: 900px 1080px;
+      gap: 48px;
+      align-content: center;
+      justify-content: center;
+    }
+    .pair-preview .preview-wide   { grid-column: 1; grid-row: 1 / span 2; align-self: center; }
+    .pair-preview .preview-square { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+    .pair-preview .preview-label {
+      font-family: var(--mono);
+      font-size: 20px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    /* ---------- 12. Per-poster mounting helpers ---------- */
+    .poster .corner-tl,
+    .poster .corner-tr,
+    .poster .corner-bl,
+    .poster .corner-br {
+      position: absolute;
+      font-family: var(--mono);
+      font-size: 18px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      z-index: 3;
+    }
+    .poster.xhs .corner-tl,
+    .poster.square .corner-tl { left: 88px; top: 56px; }
+    .poster.xhs .corner-tr,
+    .poster.square .corner-tr { right: 88px; top: 56px; }
+    .poster.xhs .corner-bl,
+    .poster.square .corner-bl { left: 88px; bottom: 56px; }
+    .poster.xhs .corner-br,
+    .poster.square .corner-br { right: 88px; bottom: 56px; }
+    .poster.wide .corner-tl { left: 120px; top: 56px; }
+    .poster.wide .corner-tr { right: 120px; top: 56px; }
+    .poster.wide .corner-bl { left: 120px; bottom: 56px; }
+    .poster.wide .corner-br { right: 120px; bottom: 56px; }
+  </style>
+</head>
+<body>
+  <!-- THEME_OVERRIDE
+       Change <html data-theme="…"> above to:
+       ink-classic | indigo-porcelain | forest-ink | kraft-paper | dune | midnight-ink
+  -->
+  <style>
+    :root {
+      --grey-2: rgba(0,0,0,0.1);
+      --grey-3: rgba(0,0,0,0.45);
+    }
+    .align-items-center { align-items: center; }
+    .card-ink { background: var(--ink); color: var(--paper); }
+    .card-fill { background: rgba(0,0,0,0.04); }
+    .card-outlined { border: 1px solid var(--grey-2); }
+  </style>
+
+  <main class="sheet">
+
+    <!-- POSTERS_HERE -->
+    <!--
+      Replace the placeholder posters below with real content.
+      Each poster carries one Layout Recipe (M01-M15) from
+      references/layout-recipes.md.
+
+      Available board sizes:
+        <section class="poster xhs"    id="xhs-01">…</section>   3:4
+        <section class="poster square" id="wechat-1x1">…</section> 1:1
+        <section class="poster wide"   id="wechat-21x9">…</section> 21:9
+
+      For WeChat covers, also include a <section class="pair-preview">
+      that places the 21:9 + 1:1 side-by-side for review.
+    -->
+
+    <!-- P1: Cover (M01) -->
+    <section class="poster xhs" id="xhs-01">
+      <canvas class="mag-bg" data-bg="ink-flow"></canvas>
+      <div class="grain"></div>
+      <div class="content stack gap-4">
+        <div class="issue-row">
+          <span>2026.05</span>
+        </div>
+        <div class="stack gap-2">
+          <p class="kicker">build-memory：建立跨 Agent 的项目记忆层</p>
+          <h1 class="h-display" style="font-size: 96px; line-height: 1.1">给你的项目<br>装上“外挂大脑”</h1>
+          <p class="h-sub">用 5 个文件，构建跨 Agent 与人机协作的统一上下文</p>
+        </div>
+        <figure class="frame-img r-1x1">
+          <img src="assets/bg.png" alt="cover image" style="object-fit: cover">
+        </figure>
+        <p class="lead">每个 Agent 都基于同样的共享上下文工作，三个月后再回来维护代码，你会庆幸它还在。</p>
+      </div>
+      <div class="issue-strip">
+        <span>Tool · build-memory</span>
+        <span>—</span>
+        <span>GitHub</span>
+      </div>
+    </section>
+
+    <!-- P2: Pain Point vs Solution (M15 Before / After) -->
+    <section class="poster xhs" id="xhs-02">
+      <canvas class="mag-bg" data-bg="ink-flow"></canvas>
+      <div class="grain"></div>
+      <div class="content stack gap-3">
+        <p class="kicker">Pain Points · 为什么要有记忆层？</p>
+        <h2 class="h-xl" style="font-size: 80px">当项目没有记忆层</h2>
+        <div class="beforeafter" style="margin-top: 24px">
+          <div class="ba-block before">
+            <p class="kicker">Before · 痛点</p>
+            <h3 class="h-md" style="font-size: 40px">每天数十个 Session 的困局</h3>
+            <ul class="body" style="margin:0; padding-left:1.2em">
+              <li style="margin-bottom: 12px">每开一个新会话，Agent 都要重新读技术栈与约定</li>
+              <li style="margin-bottom: 12px">Agent 之间相互隔离，没有共享历史，各自为战</li>
+              <li style="margin-bottom: 12px">做过的决策和踩过的坑，随着窗口关闭全部丢失</li>
+              <li style="margin-bottom: 12px">去找探索过又放弃的路径，就如同大海捞针</li>
+            </ul>
+          </div>
+          <div class="ba-block">
+            <p class="kicker">After · 解法</p>
+            <h3 class="h-md" style="font-size: 40px">轻量、职责分明的文件</h3>
+            <ul class="body" style="margin:0; padding-left:1.2em">
+              <li style="margin-bottom: 12px">外化上下文，建立持久的记忆层</li>
+              <li style="margin-bottom: 12px">主从引用 (Master-Mirror)，消除信息漂移</li>
+              <li style="margin-bottom: 12px">沉淀决策上下文：补充 Git History 不记录的“为什么”</li>
+              <li style="margin-bottom: 12px">实现工作留痕与进度跟踪，防止跑偏</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- P3: The 5 Files + 1 Script (M14 Vertical Pipeline) -->
+    <section class="poster xhs" id="xhs-03">
+      <canvas class="mag-bg" data-bg="ink-flow"></canvas>
+      <div class="grain"></div>
+      <div class="content stack gap-2">
+        <p class="kicker">Core Files · 职责分明</p>
+        <h2 class="h-xl" style="font-size: 80px">5个文件 + 1个脚本</h2>
+        <div class="pipeline-v" style="margin-top: 16px">
+          <div class="step">
+            <div class="step-nb">01</div>
+            <div>
+              <h3 class="step-title">AGENTS.md</h3>
+              <p class="step-desc" style="font-size: 20px">通用项目事实与规则库。包含技术栈、目录结构及所有重要约定。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-nb">02</div>
+            <div>
+              <h3 class="step-title">CLAUDE.md</h3>
+              <p class="step-desc" style="font-size: 20px">Claude 专属入口 (Stub)。仅包含对 AGENTS.md 的单向引用及极少数补充行为约束。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-nb">03</div>
+            <div>
+              <h3 class="step-title">CHANGELOG.md</h3>
+              <p class="step-desc" style="font-size: 20px">发布历史。记录版本粒度的、面向用户可见的变更历史。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-nb">04</div>
+            <div>
+              <h3 class="step-title">SESSION_LOG.md</h3>
+              <p class="step-desc" style="font-size: 20px">协作日记。记录做过的决策、遇到的问题和调试上下文，实现工作留痕。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-nb">05</div>
+            <div>
+              <h3 class="step-title">TODO.md</h3>
+              <p class="step-desc" style="font-size: 20px">用户主导的待办清单。记录开发进度、待办及已完成事项，实现人和 Agent 的对齐。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-nb" style="background: var(--ink); color: var(--paper)">06</div>
+            <div>
+              <h3 class="step-title">.memory/session_log.py</h3>
+              <p class="step-desc" style="font-size: 20px">日志管理脚本，提供多 Agent 并发写入锁机制与自动归档清理策略。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- P4: How to Use (Usage Scenarios) -->
+    <section class="poster xhs" id="xhs-04">
+      <canvas class="mag-bg" data-bg="ink-flow"></canvas>
+      <div class="grain"></div>
+      <div class="content stack gap-3">
+        <p class="kicker">Scenarios · 使用场景</p>
+        <h2 class="h-xl" style="font-size: 72px; white-space: nowrap; letter-spacing: -2px;">记忆层解决了哪些痛点？</h2>
+        <div class="pipeline-v" style="margin-top: 24px">
+          <div class="step">
+            <div class="step-nb">01</div>
+            <div>
+              <h3 class="step-title">降低 SESSION 启动成本</h3>
+              <p class="step-desc" style="font-size: 22px">把稳定的背景知识变成项目规范，每次启动自动加载，不用从头开始解释架构和技术栈。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-nb">02</div>
+            <div>
+              <h3 class="step-title">降低跨 AGENT 对齐成本</h3>
+              <p class="step-desc" style="font-size: 22px">利用规则库对齐目标，用 SESSION_LOG 同步进展。外化的记忆保证了工作过程中的信息互通。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-nb">03</div>
+            <div>
+              <h3 class="step-title">项目知识的沉淀</h3>
+              <p class="step-desc" style="font-size: 22px">这不是用来代替 git history，而是补充记录“为什么”。沉淀经验和踩过的坑，方便复盘。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-nb">04</div>
+            <div>
+              <h3 class="step-title">人与 AGENT 的对齐与汇报</h3>
+              <p class="step-desc" style="font-size: 22px">共同维护 TODO，人来掌握方向盘；让 Agent 读日志为你自动生成日报或周报。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- P6: Workflow Flowchart -->
+    <section class="poster xhs" id="xhs-05">
+      <canvas class="mag-bg" data-bg="ink-flow"></canvas>
+      <div class="grain"></div>
+      <div class="content stack gap-3">
+        <p class="kicker">Workflow · 协同流转</p>
+        <h2 class="h-xl" style="font-size: 72px; letter-spacing: -2px; white-space: nowrap;">一个完整Session的记忆流</h2>
+        
+        <div class="stack gap-3" style="margin-top: 16px;">
+          <!-- Stage 1 -->
+          <div class="card-outlined stack gap-3" style="padding: 40px 32px; background: rgba(250,250,248,.8); position: relative; border-radius: 8px;">
+            <div class="mono" style="position: absolute; top: -16px; left: 32px; background: var(--ink); color: var(--paper); padding: 6px 16px; border-radius: 20px; font-size: 16px; font-weight: bold;">STAGE 01 · INPUT & CONTEXT</div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+              <div class="stack gap-2">
+                <h4 class="h-sm" style="font-size: 22px;">用户指令</h4>
+                <p class="body" style="font-size: 16px; color: var(--muted); margin:0; line-height: 1.5">通过自然语言下达的新需求或 Bug 修复指令。</p>
+              </div>
+              <div class="stack gap-2" style="border-left: 1px dashed var(--line); padding-left: 24px;">
+                <h4 class="h-sm" style="font-size: 22px;">规则注入 (AGENTS)</h4>
+                <p class="body" style="font-size: 16px; color: var(--muted); margin:0; line-height: 1.5">Agent 启动时自动加载技术栈与边界约束。</p>
+              </div>
+              <div class="stack gap-2" style="border-left: 1px dashed var(--line); padding-left: 24px;">
+                <h4 class="h-sm" style="font-size: 22px;">历史追溯 (LOG)</h4>
+                <p class="body" style="font-size: 16px; color: var(--muted); margin:0; line-height: 1.5">阅读前置上下文，理解历史决策与当前进展。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="center" style="font-size: 32px; color: var(--ink);">↓</div>
+
+          <!-- Stage 2 -->
+          <div class="card-ink stack gap-3 center" style="padding: 48px; border-radius: 8px; position: relative;">
+            <div class="mono" style="position: absolute; top: -16px; left: 32px; background: var(--paper); color: var(--ink); border: 2px solid var(--ink); padding: 6px 16px; border-radius: 20px; font-size: 16px; font-weight: bold;">STAGE 02 · PROCESS (AGENT)</div>
+            <h3 class="h-md" style="font-size: 40px; color: var(--paper); margin: 0">多 Agent 协同思考与工作流</h3>
+            <div class="row gap-4" style="margin-top: 16px; justify-content: center;">
+              <span class="mono" style="border: 1px solid rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; color: rgba(255,255,255,0.8); font-size: 18px;">拆解 TODO</span>
+              <span style="color: rgba(255,255,255,0.4)">→</span>
+              <span class="mono" style="border: 1px solid rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; color: rgba(255,255,255,0.8); font-size: 18px;">代码开发</span>
+              <span style="color: rgba(255,255,255,0.4)">→</span>
+              <span class="mono" style="border: 1px solid rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; color: rgba(255,255,255,0.8); font-size: 18px;">完成验证</span>
+            </div>
+          </div>
+
+          <div class="center" style="font-size: 32px; color: var(--ink);">↓</div>
+
+          <!-- Stage 3 -->
+          <div class="card-fill stack gap-3" style="padding: 40px 32px; position: relative; border-radius: 8px; border: 1px solid var(--line);">
+            <div class="mono" style="position: absolute; top: -16px; left: 32px; background: var(--ink); color: var(--paper); padding: 6px 16px; border-radius: 20px; font-size: 16px; font-weight: bold;">STAGE 03 · OUTPUT & MEMORY</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+              <div class="row gap-3 align-items-center" style="background: var(--paper); padding: 20px; border-radius: 8px; border: 1px solid var(--line); box-shadow: 0 4px 12px rgba(0,0,0,0.02)">
+                <div style="font-size: 32px; filter: grayscale(1);">📦</div>
+                <div>
+                  <h4 class="h-sm" style="font-size: 20px; margin:0 0 4px 0;">写入代码库</h4>
+                  <p class="mono" style="font-size: 14px; color: var(--muted); margin:0;">Git Commit</p>
+                </div>
+              </div>
+              <div class="row gap-3 align-items-center" style="background: var(--paper); padding: 20px; border-radius: 8px; border: 1px solid var(--line); box-shadow: 0 4px 12px rgba(0,0,0,0.02)">
+                <div style="font-size: 32px; filter: grayscale(1);">📝</div>
+                <div>
+                  <h4 class="h-sm" style="font-size: 20px; margin:0 0 4px 0;">记录推导决策</h4>
+                  <p class="mono" style="font-size: 14px; color: var(--muted); margin:0;">SESSION_LOG.md</p>
+                </div>
+              </div>
+              <div class="row gap-3 align-items-center" style="background: var(--paper); padding: 20px; border-radius: 8px; border: 1px solid var(--line); box-shadow: 0 4px 12px rgba(0,0,0,0.02)">
+                <div style="font-size: 32px; filter: grayscale(1);">✅</div>
+                <div>
+                  <h4 class="h-sm" style="font-size: 20px; margin:0 0 4px 0;">更新任务状态</h4>
+                  <p class="mono" style="font-size: 14px; color: var(--muted); margin:0;">TODO.md</p>
+                </div>
+              </div>
+              <div class="row gap-3 align-items-center" style="background: var(--paper); padding: 20px; border-radius: 8px; border: 1px solid var(--line); box-shadow: 0 4px 12px rgba(0,0,0,0.02)">
+                <div style="font-size: 32px; filter: grayscale(1);">🚀</div>
+                <div>
+                  <h4 class="h-sm" style="font-size: 20px; margin:0 0 4px 0;">沉淀发布日志</h4>
+                  <p class="mono" style="font-size: 14px; color: var(--muted); margin:0;">CHANGELOG.md</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- P6: Installation & Outro -->
+    <section class="poster xhs" id="xhs-06">
+      <canvas class="mag-bg" data-bg="ink-flow"></canvas>
+      <div class="grain"></div>
+      <div class="content stack gap-3">
+        <div class="stack gap-2">
+          <p class="kicker">Install · 安装与运行</p>
+          <h2 class="h-xl" style="font-size: 80px">三步完成项目接入</h2>
+        </div>
+        
+        <div class="stack gap-3" style="margin-top: 8px">
+          <!-- Step 1 -->
+          <div class="stack gap-3" style="background: rgba(250,250,248,.8); border: 1px solid var(--line); border-radius: 8px; padding: 24px;">
+            <div class="row gap-3 align-items-center">
+              <div class="mono" style="background: var(--ink); color: var(--paper); padding: 4px 12px; border-radius: 4px; font-size: 18px">01</div>
+              <h3 class="h-md" style="font-size: 28px; margin: 0">获取 Skill 源码</h3>
+            </div>
+            <div class="row gap-3 align-items-center" style="margin-top: -4px;">
+              <img src="assets/github.svg" style="width: 32px; height: 32px; opacity: 0.9;">
+              <span class="mono" style="font-size: 32px; font-weight: bold; color: var(--ink);">max-doo/build-memory</span>
+            </div>
+            <div class="card-ink stack gap-2" style="padding: 16px 24px; border-radius: 8px; margin-top: 8px;">
+              <p class="mono" style="font-size: 16px; color: rgba(255,255,255,0.6); margin: 0;"># Git Clone 或直接下载 Zip</p>
+              <p class="mono" style="font-size: 18px; color: var(--paper); margin: 0;">$ git clone https://github.com/max-doo/build-memory.git</p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="stack gap-3" style="background: rgba(250,250,248,.8); border: 1px solid var(--line); border-radius: 8px; padding: 28px 32px;">
+            <div class="row gap-3 align-items-center">
+              <div class="mono" style="background: var(--ink); color: var(--paper); padding: 4px 12px; border-radius: 4px; font-size: 18px">02</div>
+              <h3 class="h-md" style="font-size: 28px; margin: 0">放入 Skills 目录生效</h3>
+            </div>
+            <div class="stack" style="margin-top: 8px">
+              <div style="display: grid; grid-template-columns: 240px 1fr; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line)">
+                <div class="row gap-3 align-items-center">
+                  <img src="assets/claude.svg" style="width: 36px; height: 36px; border-radius: 8px;">
+                  <p class="body" style="margin: 0; font-size: 22px; white-space: nowrap;">Claude Code</p>
+                </div>
+                <div><p class="mono" style="font-size: 20px; margin: 0; color: var(--ink)">~/.claude/skills/build-memory/</p></div>
+              </div>
+              <div style="display: grid; grid-template-columns: 240px 1fr; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line)">
+                <div class="row gap-3 align-items-center">
+                  <img src="assets/codex.png" style="width: 36px; height: 36px; border-radius: 8px;">
+                  <p class="body" style="margin: 0; font-size: 22px; white-space: nowrap;">OpenAI Codex</p>
+                </div>
+                <div><p class="mono" style="font-size: 20px; margin: 0; color: var(--ink)">~/.codex/skills/build-memory/</p></div>
+              </div>
+              <div style="display: grid; grid-template-columns: 240px 1fr; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line)">
+                <div class="row gap-3 align-items-center">
+                  <img src="assets/cursor.svg" style="width: 36px; height: 36px; border-radius: 8px;">
+                  <p class="body" style="margin: 0; font-size: 22px; white-space: nowrap;">Cursor IDE</p>
+                </div>
+                <div><p class="mono" style="font-size: 20px; margin: 0; color: var(--ink)">~/.cursor/skills/build-memory/</p></div>
+              </div>
+              <div style="display: grid; grid-template-columns: 240px 1fr; align-items: center; padding: 14px 0; border-bottom: none">
+                <div class="row gap-3 align-items-center">
+                  <img src="assets/antigravity.png" style="width: 36px; height: 36px; border-radius: 8px;">
+                  <p class="body" style="margin: 0; font-size: 22px; white-space: nowrap;">Antigravity</p>
+                </div>
+                <div><p class="mono" style="font-size: 20px; margin: 0; color: var(--ink)">~/.gemini/config/skills/build-memory/</p></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="stack gap-3" style="background: rgba(250,250,248,.8); border: 1px solid var(--line); border-radius: 8px; padding: 24px;">
+            <div class="row gap-3 align-items-center">
+              <div class="mono" style="background: var(--ink); color: var(--paper); padding: 4px 12px; border-radius: 4px; font-size: 18px">03</div>
+              <h3 class="h-md" style="font-size: 28px; margin: 0">使用 / 一键调用</h3>
+            </div>
+            <div class="card-ink stack gap-2 center" style="padding: 16px 24px; border-radius: 8px;">
+              <p class="mono" style="font-size: 24px; color: var(--paper); margin: 0;">/build-memory</p>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 8px;">
+              <div class="stack gap-1" style="border-left: 3px solid var(--ink); padding-left: 16px;">
+                <p class="t-meta" style="color: var(--ink); font-weight: bold; margin: 0; font-size: 16px;">A. 尚未建立记忆</p>
+                <p class="body" style="font-size: 14px; color: var(--muted); margin: 0; line-height: 1.6">自动识别语言，读取项目配置生成上下文骨架。</p>
+              </div>
+              <div class="stack gap-1" style="border-left: 3px solid var(--ink); padding-left: 16px;">
+                <p class="t-meta" style="color: var(--ink); font-weight: bold; margin: 0; font-size: 16px;">B. 已有记忆层</p>
+                <p class="body" style="font-size: 14px; color: var(--muted); margin: 0; line-height: 1.6">增量扫描项目变化，更新已有记忆并对齐目标。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Magazine WebGL background (deterministic ink-flow) -->
+  <script src="assets/magazine-bg-webgl.js"></script>
+  <script>
+    (function () {
+      function cssVarRgb(name, fallback) {
+        var raw = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+        if (!raw) return fallback;
+        var parts = raw.split(',').map(function (x) { return parseInt(x.trim(), 10); });
+        return parts.length === 3 && parts.every(function (n) { return !isNaN(n); }) ? parts : fallback;
+      }
+      function mountAll() {
+        if (!window.MagazineBg || !window.MagazineBg.mount) return;
+        var ink    = cssVarRgb('--ink-rgb',    [10, 10, 11]);
+        var paper  = cssVarRgb('--paper-rgb',  [243, 240, 232]);
+        var accent = cssVarRgb('--accent-rgb', [17, 17, 17]);
+        document.querySelectorAll('canvas.mag-bg').forEach(function (c) {
+          window.MagazineBg.mount(c, {
+            ink: ink,
+            paper: paper,
+            accent: accent,
+            strength: 0.32,
+            frozenTime: 12.5
+          });
+        });
+      }
+      if (document.readyState === 'complete') mountAll();
+      else window.addEventListener('load', mountAll);
+    })();
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

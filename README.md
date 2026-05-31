@@ -119,28 +119,28 @@ flowchart TD
     E --> F
 
     F --> F1["Scan top-level directory structure"]
-    F1 --> F2["Read package.json / pyproject.toml / Cargo.toml etc."]
-    F2 --> F3["Extract real commands from Makefile / CI configs"]
-    F3 --> F4["Check if equivalent files already exist"]
+    F1 --> F2["Extract facts from package/build/CI configs"]
+    F2 --> F3["Check if equivalent files already exist"]
 
-    F4 --> G{"Is workspace empty?"}
+    F3 --> G{"Is workspace empty?"}
     G --> |"Yes"| H["Ask user:<br/>1. Skip initialization<br/>2. Describe project plan<br/>3. Create minimal skeleton with TODOs"]
-    G --> |"No"| I["3. Create Missing Files"]
+    G --> |"No"| I["3. Create Missing Files & Support Dir"]
 
     H --> I
 
     I --> I1["Read English templates in assets/"]
     I1 --> I2["Translate text to target language"]
     I2 --> I3["Fill placeholders with verified facts from Step 2"]
-    I3 --> I4["Write to project root"]
+    I3 --> I4["Write to project root (including .memory/)"]
 
     I4 --> J["4. Refine Existing Files"]
     J --> J1["Read existing files in full"]
-    J1 --> J2["Compare against spec to find gaps"]
-    J2 --> J3{"Gap Classification"}
+    J1 --> J2["Read reference/ specs or .memory/KNOWLEDGE.md if needed"]
+    J2 --> J3["Compare against spec to find gaps"]
+    J3 --> J4{"Gap Classification"}
 
-    J3 --> |"Minor<br/>Wording, stale commands, missing single line"| K["Directly modify and report"]
-    J3 --> |"Major<br/>Wrong role, cross-references, length limit exceeded"| L["Summarize issues and request user confirmation"]
+    J4 --> |"Minor<br/>Wording, stale commands"| K["Directly modify and report"]
+    J4 --> |"Major<br/>Wrong role, forced merges, length exceeded"| L["Point out violations clearly and request confirmation"]
 
     K --> M["5. Generate Report"]
     L --> |"User approved"| M
@@ -165,8 +165,8 @@ sequenceDiagram
     autonumber
     participant U as Developer
     participant A as AI Agent
-    participant CM as CLAUDE.md<br/>(Project Rules)
-    participant SL as SESSION_LOG.md<br/>(Session Log)
+    participant CM as AGENTS.md / CLAUDE.md<br/>(Project Rules)
+    participant SL as .memory/session_log.py<br/>(Session Log Script)
     participant TD as TODO.md<br/>(Task Board)
     participant CL as CHANGELOG.md<br/>(Changelog)
     participant Repo as Codebase
@@ -187,7 +187,7 @@ sequenceDiagram
 
     Note over U,Repo: === Session End ===
 
-    A->>SL: [Append] Operation log + bug context
+    A->>SL: [Invoke Script] Append log + bug context
     Note right of SL: 2026-05-18<br/>- 14:30 | fixed: Login token doesn't refresh<br/>  - Symptom: User logged out after 30m<br/>  - Root cause: refreshToken not in Redis<br/>  - Gotcha: Thought it was frontend issue<br/>  - Fix: Added refresh logic in authMiddleware
 
     A->>TD: [Ask User] Update TODO?
@@ -204,7 +204,7 @@ sequenceDiagram
 
     U->>A: Continue optimizing the login module
     A->>CM: [Auto Read] Load project rules
-    A->>SL: [On-Demand Read] Load session history
+    A->>SL: [On-Demand Read] Read SESSION_LOG.md history
     SL-->>A: Last fixed token refresh...<br/>Avoid repeating the Redis gotcha
     A->>Repo: Continue working based on context
 ```
@@ -218,7 +218,7 @@ flowchart LR
 
         subgraph Input["Input Layer"]
             I1["User Instructions"]
-            I2["CLAUDE.md<br/>Auto-Loaded"]
+            I2["AGENTS.md & CLAUDE.md<br/>Auto-Loaded"]
             I3["SESSION_LOG.md<br/>Loaded On-Demand"]
         end
 
@@ -229,7 +229,7 @@ flowchart LR
 
         subgraph Output["Output / Persistence Layer"]
             O1["Code Changes → Git"]
-            O2["Operation Log → SESSION_LOG.md"]
+            O2["Invoke Script → SESSION_LOG.md<br/>(and .memory/ archive)"]
             O3["Task Status → TODO.md"]
             O4["Release Changes → CHANGELOG.md"]
         end
@@ -277,7 +277,7 @@ The `CODEX_HOME` environment variable can override `~/.codex`. Restart Codex aft
 
 | Scope | Path | Availability |
 |------|------|----------|
-| Project (Recommended) | `<repo>/.cursor/skills/build-memory/` | Current repository only |
+| Project (Recommended) | `~/.cursor/skills/build-memory/` | Current repository only |
 
 The global `~/.cursor/skills/` directory is not officially confirmed by documentation; project scope is a reliable choice. Reload the workspace after adding (`Cmd/Ctrl+Shift+P → Developer: Reload Window`).
 
@@ -344,6 +344,7 @@ The skill inspects your project:
 - Detects the tech stack from `package.json`, `pyproject.toml`, etc.
 - Collects available script commands
 - Checks for existing equivalent files
+- (If workspace is empty) Asks the user whether to skip initialization, describe the project, or generate a minimal skeleton
 
 **Step 3 — Generate Files**
 
@@ -384,7 +385,7 @@ Claude Code / Codex automatically reads `CLAUDE.md` and `AGENTS.md` to align wit
 
 **`SESSION_LOG.md` —— Collaboration Journal**
 
-After meaningful agent sessions, the skill can append entries:
+After meaningful agent sessions, the skill should invoke `.memory/session_log.py` to append entries (which handles file locking and archival):
 
 ```markdown
 ## 2026-05-04
@@ -429,7 +430,7 @@ Records release-level changes only, not every single commit. Ideal for open-sour
 If you want to update only a specific file, tell the agent directly:
 
 - "Update AGENTS.md with the new API conventions."
-- "Append the decision we just made to SESSION_LOG."
+- "Invoke .memory/session_log.py to append the decision we just made to SESSION_LOG."
 - "Mark the refactoring task as completed in TODO.md."
 
 The skill will recognize these requests and route them to the corresponding flow.
@@ -474,15 +475,6 @@ This ensures the team shares a consistent set of agent rules, enabling new contr
 | `CHANGELOG.md` | Grows per release | Records release-level changes only, not daily commits |
 | `SESSION_LOG.md` | Append-only | Timestamped entries per session; can record debugging context |
 | `TODO.md` | Maintained dynamically | `Pending` / `Done` only; no `In progress` |
-
----
-
-## 10. Known Issues & Limitations
-
-- **No File-Locking Mechanism:** `SESSION_LOG.md` currently lacks a file-locking mechanism, which might lead to merge conflicts when multiple active sessions edit the file simultaneously.
-- **Context Bloat:** As the `SESSION_LOG.md` grows, it may cause context window bloat. Two potential solutions are:
-  - **Periodic Compression:** Periodically compress historical sessions to retain only key actions or high-level decisions.
-  - **Archiving Old Logs:** Keep only the most recent week of session logs, moving older logs to `HISTORY.md` and placing a link at the end of `SESSION_LOG.md` (e.g., *Session logs on or before YYYY-MM-DD can be found in `HISTORY.md`*).
 
 ---
 

@@ -186,27 +186,53 @@ def _append_archive_block(memory_dir: Path, date_text: str, block: str) -> None:
 
 def _append_entry(*, content: str, now: datetime, agent: str, fields: dict[str, object]) -> str:
     date_heading = f"## {now:%Y-%m-%d}"
-    if not re.search(rf"^{re.escape(date_heading)}\s*$", content, re.MULTILINE):
-        content = content.rstrip() + f"\n\n{date_heading}\n\n"
 
-    entry = [f"### {now:%H:%M} | {agent}", ""]
+    entry_lines = [f"### {now:%H:%M} | {agent}", ""]
     for key in ("done", "context", "decision"):
         value = fields.get(key)
         if value:
-            entry.append(f"- {key}: {value}")
+            entry_lines.append(f"- {key}: {value}")
 
     for key in ("added", "modified", "removed"):
         values = [value for value in fields.get(key, []) if value]
         if values:
-            entry.append(f"- {key}:")
-            entry.extend(f"  - `{value}`" for value in values)
+            entry_lines.append(f"- {key}:")
+            entry_lines.extend(f"  - `{value}`" for value in values)
 
     for key in ("lesson", "unresolved"):
         value = fields.get(key)
         if value:
-            entry.append(f"- {key}: {value}")
+            entry_lines.append(f"- {key}: {value}")
 
-    return content.rstrip() + "\n\n" + "\n".join(entry).rstrip() + "\n"
+    entry_str = "\n".join(entry_lines).rstrip() + "\n"
+
+    # Search for the date heading in the existing content
+    heading_pattern = rf"^{re.escape(date_heading)}\s*$"
+    match = re.search(heading_pattern, content, re.MULTILINE)
+
+    if match:
+        # Date heading exists. Insert the new entry right after it.
+        insert_pos = match.end()
+        # Find where the next line starts
+        post_match = content[insert_pos:]
+        ws_match = re.match(r"^\s*", post_match)
+        if ws_match:
+            insert_pos += ws_match.end()
+            
+        return content[:match.end()].rstrip() + "\n\n" + entry_str + "\n" + content[insert_pos:].lstrip()
+    else:
+        # Date heading does not exist. We need to insert it at the very top of the date blocks.
+        # Let's find the first date block (starts with "## ")
+        first_heading_match = re.search(r"^## ", content, re.MULTILINE)
+        if first_heading_match:
+            insert_pos = first_heading_match.start()
+            preamble = content[:insert_pos].rstrip()
+            post_content = content[insert_pos:].lstrip()
+            return preamble + f"\n\n{date_heading}\n\n" + entry_str + "\n" + post_content
+        else:
+            # No headings exist at all
+            preamble = content.rstrip()
+            return preamble + f"\n\n{date_heading}\n\n" + entry_str
 
 
 def _extract_lessons(content: str) -> list[str]:
@@ -230,6 +256,16 @@ def _csv_or_repeated(values: list[str] | None) -> list[str]:
     return result
 
 
+def get_default_agent() -> str:
+    if os.environ.get("SESSION_LOG_AGENT"):
+        return os.environ["SESSION_LOG_AGENT"]
+    if os.environ.get("CURSOR_AGENT") == "1":
+        return "cursor-agent"
+    if os.environ.get("CLAUDE_CODE") == "1" or os.environ.get("CLAUDE") == "1":
+        return "claude-code"
+    return "agent"
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Append a structured entry to SESSION_LOG.md."
@@ -242,7 +278,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--removed", action="append", help="Removed file path. May repeat or use comma-separated values.")
     parser.add_argument("--lesson", help="Reusable lesson or pitfall.")
     parser.add_argument("--unresolved", help="Unresolved follow-up item.")
-    parser.add_argument("--agent", default="agent", help="Agent label for the entry.")
+    parser.add_argument("--agent", default=get_default_agent(), help="Agent label for the entry.")
     return parser.parse_args()
 
 
@@ -259,7 +295,7 @@ def main() -> int:
             modified=_csv_or_repeated(args.modified),
             removed=_csv_or_repeated(args.removed),
             lesson=args.lesson,
-            unresolved=args.unresolved,
+            unresolved=_csv_or_repeated([args.unresolved]) if args.unresolved else [],
             agent=args.agent,
         )
     except TimeoutError as exc:

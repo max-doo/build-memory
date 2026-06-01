@@ -26,33 +26,53 @@ For files being **created**:
 
 For files being **refined**, keep the existing file's language; do not translate.
 
-### 2. Inspect the workspace
+### 2. Phase 1: Audit & Propose (Mandatory Approval Gate)
 
-Before any write, gather facts:
+Before any write or modification, gather facts:
 - Top-level files and directories
-- Package manager / language / framework (`package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, etc.)
-- Real commands from `package.json` scripts, `Makefile`, CI configs
-- Existing managed files and likely aliases (`agent.md`, `WORKLOG.md`, `.agent/log.md`, etc.)
+- Package manager / language / framework (`package.json`, `pyproject.toml`, etc.)
+- Real commands from configuration scripts
+- **Read in full** all existing managed rule files in the workspace (whether standard `AGENTS.md` or legacy `.cursor/rules`, `CLAUDE.md`, etc.).
 
-**Empty workspace detection.** If the inspection finds no source directory, no package manifest (`package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, etc.), no build/test config (`Makefile`, `tsconfig.json`, …), and no CI configuration — i.e. only `.git`, README, license, or dotfiles — STOP before writing any managed file. Ask the user to choose:
+**Empty workspace detection.** If the inspection finds no source directory, no package manifest, and no build config—i.e. only `.git`, README, etc.—STOP before writing any managed file. Ask the user to choose:
+1. Skip for now.
+2. Describe the planned project so meaningful defaults can be filled in.
+Do not auto-fill placeholders blindly.
 
-1. Skip build-memory for now.
-2. Describe the planned project (language, framework, intent) so meaningful defaults can be filled in.
-3. Create minimal scaffold files with prominent `TODO: empty workspace` markers and a leading comment noting the workspace was empty at init time.
+For non-empty workspaces, output a clear `Refactoring Plan` detailing:
+1. Which infrastructure pieces are missing and will be physically copied (e.g., `.memory/session_log.py`).
+2. Which existing custom business rules, evaluation principles, or architecture constraints were discovered, along with a **commitment to preserve them completely**.
+3. How `AGENTS.md` and `CLAUDE.md` will be reorganized.
 
-Do not auto-fill placeholders in an empty workspace; the resulting noise outweighs the value.
+<HARD-GATE>
+You MUST STOP and wait for the user's explicit approval. Do NOT proceed with any modifications or file writes until approval is granted.
+</HARD-GATE>
 
-Never invent commands or paths. If a placeholder cannot be filled from the repo, leave a `TODO: confirm` marker and tell the user.
+### 3. Phase 2: Infrastructure Scaffolding
 
-### 3. Create missing files and memory support
+Once the user approves, **your very first step must always be copying the physical assets.**
+- Regardless of whether old or non-standard rule folders exist in the project, you **MUST** fully copy the `assets/.memory/` directory and its internal scripts to the project root.
+- Never "borrow" or "adapt to" legacy frameworks. The standard `.memory` directory and `session_log.py` are non-negotiable infrastructure.
 
-For each missing file:
-1. Read the English template at `assets/<filename>`.
-2. Translate fixed text (headings, comments, labels) into the target language.
-3. Substitute placeholders with verified facts from Step 2.
-4. Write to the project root.
+### 4. Phase 3: Differential Merging (Strict Zones)
 
-Also copy the support directory from `assets/.memory/` to the project root as `.memory/` when it is missing. Do not overwrite an existing `.memory/session_log.py` or `.memory/KNOWLEDGE.md` without explicit approval.
+When creating missing files or refining existing ones, you must follow the rule of "Differential Merging" with strict zones. **The overall structure MUST align with the template's skeleton (Headings)**, but the content is handled differently by zone:
+
+**Strict Zone (Memory Layer)**:
+- For the `## Memory Layer` section in `AGENTS.md`, you **MUST** copy the content from the `assets/AGENTS.md` template exactly, 100% verbatim. No omissions, custom rewriting, or deletions are allowed, otherwise the memory system scripts will fail.
+- Ensure `CLAUDE.md` is strictly pruned to contain only the `@AGENTS.md` reference, preventing rule duplication.
+
+**Baseline Zone (Generic Rules)**:
+- For generic operational sections like `## Working Rules` and `## Done Criteria`, you should **completely retain the standard expressions from the template**.
+- If the legacy rules contain project-specific completion criteria or unique working disciplines, you MUST **append** them to the end of the template's content. Never overwrite custom discipline with generic template text.
+
+**Flexible Zone (Project Rules)**:
+- Existing core business principles or architectural constraints must be mapped to their appropriate headings. They **MUST NEVER be silently deleted** in the name of template alignment.
+- If legacy rules cannot fit neatly into the template's headings, you MUST create custom headings for them (e.g., `## Custom Project Rules`) and preserve them entirely. Complete, dogmatic rewrites are forbidden.
+
+For creating other missing files: read the `assets/` templates, translate headings if necessary, and substitute placeholders with verified facts.
+**Cold Start Seeding**: If the workspace contains a `.git` directory and you are creating `SESSION_LOG.md` for the very first time, you SHOULD run `git log -n 5 --since="7 days ago" --oneline` to extract recent context. Synthesize this into a brief historical background and immediately run `python .memory/session_log.py --done "Recent context imported from Git history: [your summary]"` to seed the initial memory layer.
+Never invent commands or timestamps. Never overwrite an existing `.memory/KNOWLEDGE.md` or manually edit `SESSION_LOG.md` (which must be edited via the script) without explicit approval.
 
 | File | Role | Target |
 |------|------|--------|
@@ -63,31 +83,6 @@ Also copy the support directory from `assets/.memory/` to the project root as `.
 | `TODO.md` | User-governed backlog; `Pending` / `Done` only (no `In progress`) | — |
 | `.memory/session_log.py` | Recommended session-log writer with lock retries, 7-day archival, and lesson candidate hints | — |
 | `.memory/KNOWLEDGE.md` | Long-term reusable lessons and durable decisions; read on demand only | — |
-
-### 4. Refine existing files
-
-For each existing managed file:
-
-1. Read it in full.
-2. **Strictly** compare against the spec. If you haven't loaded the specs, you **MUST** read the relevant reference sections (do not skip or guess from memory):
-   - For `CHANGELOG.md`, `SESSION_LOG.md`, `TODO.md`: see `reference/tracking-files-guide.md`
-     - §2 CHANGELOG definition and rules
-     - §3 SESSION_LOG definition and rules
-     - §4 TODO definition and rules
-     - §7 Decision checklists
-   - For `AGENTS.md`, `CLAUDE.md`: see `reference/rules-generation-guide.md`
-     - §1 AGENTS.md generation guide
-     - §2 CLAUDE.md generation guide
-     - §3 Differential writing (AGENTS.md vs CLAUDE.md)
-     - §6 Appendix: content decision table
-   - If `.memory/KNOWLEDGE.md` exists and you are creating or refining the `Known Gotchas` section in `AGENTS.md`, read it and decide whether any lessons deserve promotion. Promote only lessons that recur across tasks, are costly when missed, are not obvious from code structure, and can be written as one concrete operating rule; keep everything else in `KNOWLEDGE.md`.
-3. Classify the gap (**Strict Audit, No Compromises**):
-   - **Minor** — strict wording fixes, clearly stale commands, or harmless micro-extras. Edit in place.
-   - **Major** — structural non-compliance (e.g. `AGENTS.md` missing required sections or violating single source of truth), wrong file role (e.g. `CLAUDE.md` contains full commands instead of referencing `@AGENTS.md`), file >2× recommended length, `TODO.md` containing "In progress" sections, or `CHANGELOG.md` used as a daily log.
-4. **Major gaps require user confirmation before any edit. NEVER silently patch or force-merge content into non-compliant structures.** 
-   - You must explicitly point out the violations to the user and flag them as "Major".
-   - Present a short summary of issues and a proposal for a **complete rewrite** of the affected section.
-   - Stop and wait for user approval, skip, or item-by-item direction.
 
 ### 5. Report
 

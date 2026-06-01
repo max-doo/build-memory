@@ -73,7 +73,7 @@ In the generated templates, `CLAUDE.md` serves only as a minimalist entry stub t
 This is achieved by specifying the following rules in `AGENTS.md` and `CLAUDE.md`:
 
 ```markdown
-## Tracking Files
+## Memory Layer
 
 - `SESSION_LOG.md`: Recent 7-day collaboration log. Use `python .memory/session_log.py` to append notes; do not edit it manually.
 - `.memory/KNOWLEDGE.md`: Long-term reusable lessons and decisions; read only when the task likely depends on project history.

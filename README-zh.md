@@ -75,7 +75,7 @@ Skill 从不虚构内容。它首先检查你的项目：
 实现方式是在 `AGENTS.md` & `CLAUDE.md` 中规定：
 
 ```markdown
-## 跟踪文件
+## 记忆层
 
 - `SESSION_LOG.md`：最近 7 天协作日志。使用 `python .memory/session_log.py` 追加记录；不要手工编辑。
 - `.memory/KNOWLEDGE.md`：长期可复用经验和决策；仅在任务明显依赖项目历史时读取。

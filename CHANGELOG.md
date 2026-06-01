@@ -12,6 +12,20 @@
 - 留空的小节（Removed、Security 等）可删除。
 -->
 
+## [1.1.0] - 2026-06-01
+
+### Added
+
+- 引入了「差异化合并 (Differential Merging) 与严格分区」规则，将生成文件划分为 Strict Zone (强制继承模板)、Baseline Zone (通用规则保留)、Flexible Zone (兼容项目独有业务规则)。
+- `AGENTS.md` 模板更新：对 Memory Layer 限制手动编辑，明确 `python .memory/session_log.py` 命令行用法及经验提升 (lessons promotion) 机制。
+- 新增项目理论基础文档 `docs/theoretical-foundation.md`，用于阐述架构理念与文献引用。
+- 新增 "冷启动播种 (Cold Start Seeding)" 机制，首次初始化时可从近 7 天的 Git 历史中提取上下文作为初始记忆。
+
+### Changed
+
+- 重构 `SKILL.md` 工作流，分为 Phase 2 基础设施脚手架搭建 (强制复制物理资产) 与 Phase 3 差异化合并。
+- `README.md` 与 `README-zh.md` 同步更新了架构与规则调整说明。
+
 ## [1.0.0] - 2026-05-28
 
 本项目正式更名为 `build-memory` 并发布 v1.0.0 版本。全面继承自原 `workspace-init` 项目的核心架构，并进一步拓展了项目记忆层的持久化与归档能力。

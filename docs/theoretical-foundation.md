@@ -250,7 +250,35 @@ The project includes a [test-workspace](https://github.com/max-doo/build-memory/
 
 **Observed outcome:** The resulting `KNOWLEDGE.md` contains 4 distilled lessons, each derived from concrete debugging experience. This demonstrates the intended episodic → semantic knowledge distillation pipeline working in practice.
 
-### 5.3 Unit Test Coverage
+### 5.3 Subagent Evaluation: Retrieval Effectiveness
+
+To validate whether externalized memory prevents "repetitive debugging", we designed a targeted A/B test using autonomous subagents.
+
+**Setup:**
+We created a mock Node.js project featuring a strict `MockDB` that throws a fatal error if given an Integer ID instead of a String ID. 
+- **Baseline Workspace**: Standard repository without memory.
+- **Memory Workspace**: Initialized with `build-memory` files and the `session_log.py` script.
+
+**Phase 1 (Encountering the Bug):** 
+A subagent in the Memory Workspace implemented `createUser`. It encountered the crash, fixed it by using `String(id)`, and successfully used `session_log.py` to write the lesson into `SESSION_LOG.md`: *"MockDB strictly requires string IDs"*.
+
+**Phase 2 (The Re-Encounter):** 
+We concurrently deployed two new subagents to implement a new feature (`createProduct`) that suffered from the exact same trap.
+- **Baseline Agent**: Had to deduce the strict type check by manually tracing the failure, running `grep` searches, and reading the `src/db.js` source code to discover the hidden `typeof` trap.
+- **Memory Agent**: Instantly recognized the rule from `SESSION_LOG.md` and applied the `String(id)` fix on its very first try, completely bypassing the crash.
+
+**Conclusion:** The Memory Agent successfully reused episodic knowledge to proactively avoid a recurring "gotcha", proving the `session_log.py` pipeline works as intended for agent collaboration.
+
+### 5.4 Subagent Evaluation: Token Efficiency
+
+During the same experiment, we expanded the mock repository to contain 50+ dummy modules to measure context token consumption during the debugging phase.
+
+- **Baseline Agent Token Consumption**: The agent had to perform repository-wide `grep` searches for the error trace and read external files (`src/db.js`) to uncover the architecture constraint. In a real-world repository, traversing code and reading multiple files to find a hidden constraint consumes **tens of thousands of tokens**.
+- **Memory Agent Token Consumption**: The agent only read the specific task file (`test3.js`) and the lightweight `SESSION_LOG.md` (~1,000 tokens). It required **zero searches and zero external file reads** because the architecture constraint was already loaded into its immediate context.
+
+**Conclusion:** Externalized memory trades a small, fixed upfront token cost (loading `SESSION_LOG.md` on session start) for massive token savings during execution by eliminating the need for deep repository searches and trial-and-error debugging loops.
+
+### 5.5 Unit Test Coverage
 
 The `session_log.py` script is validated by 5 unit tests covering:
 

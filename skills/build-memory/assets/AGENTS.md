@@ -97,12 +97,11 @@ A session or task is considered complete when:
 ## Memory Layer
 
 - `SESSION_LOG.md`: recent 7-day collaboration log; read directly when recent context is needed. Manually appending or overwriting session entries is prohibited by default; the only allowed manual edit: after a lesson has been written to KNOWLEDGE.md, modify the corresponding `- lesson:` tag to `- lesson(promoted):`.
-- Run: `python .memory/session_log.py --done "what was completed" --added "new file paths" --modified "modified files" --lesson "pitfalls or lessons (optional, only write high-value experience)"`. The script handles current time, file-lock retries, old-date archival, and structured entry formatting.
+- After adding, deleting, or modifying files, run `python .memory/session_log.py` to append a log. Required argument: the operation performed (`--done`/`added`/`modified`/`removed`). Optional arguments(if necessary): high-value experience or pitfalls(`--lesson`), context (`--context`), and key decisions (`--decision`). The script automatically handles timestamps, file lock retries, archiving of older entries, and structured entry formatting.
 - `.memory/KNOWLEDGE.md`: long-term reusable lessons and decisions. Read it only for recurring issues, debugging, architecture decisions, or when the current task likely depends on prior project experience. **NOTE: After running the `session_log.py` script, if the terminal outputs the prompt `Consider promoting stable lessons to .memory/KNOWLEDGE.md.`, you MUST immediately read those lessons and proactively extract and append them to `.memory/KNOWLEDGE.md`.**
 - `.memory/sessions/`: archived daily session logs older than the recent window. Do not read by default unless tracing older history.
 - `TODO.md`: user-governed, agent-assisted backlog; do not read or edit by default; if a session ends with unresolved items, suggest the user update TODO and apply changes only after user approval.
-- `CHANGELOG.md`: release-facing changelog; only update for user-visible or release-relevant changes.
-
+- `CHANGELOG.md`: Release-oriented changelog, updated for release-specific changes or when recording milestones.
 ## Known Gotchas
 
 - Keep only high-frequency gotchas that must be followed every session here, ideally 3-7 bullets.

@@ -76,6 +76,7 @@ A session or task is considered complete when:
 - **Validation Passed**: Relevant tests, linting, and type checks pass; if blocked, reasons and mitigation plans are explicitly documented.
 - **Risks Evaluated**: Potential side effects or blast radius of critical changes have been assessed and communicated.
 - **Build Succeeds**: The project builds successfully, or any breakage is acknowledged and tracked.
+- **Lessons Promoted**: Stable lessons prompted in the terminal after running `session_log.py` have been promoted to `.memory/KNOWLEDGE.md`.
 
 ## Commit & Pull Request Guidelines
 
@@ -97,8 +98,8 @@ A session or task is considered complete when:
 ## Memory Layer
 
 - `SESSION_LOG.md`: recent 7-day collaboration log; read directly when recent context is needed. Manually appending or overwriting session entries is prohibited by default; the only allowed manual edit: after a lesson has been written to KNOWLEDGE.md, modify the corresponding `- lesson:` tag to `- lesson(promoted):`.
-- After adding, deleting, or modifying files, run `python .memory/session_log.py` to append a log. Required argument: the operation performed (`--done`/`added`/`modified`/`removed`). Optional arguments(if necessary): high-value experience or pitfalls(`--lesson`), context (`--context`), and key decisions (`--decision`). The script automatically handles timestamps, file lock retries, archiving of older entries, and structured entry formatting.
-- `.memory/KNOWLEDGE.md`: long-term reusable lessons and decisions. Read it only for recurring issues, debugging, architecture decisions, or when the current task likely depends on prior project experience. **NOTE: After running the `session_log.py` script, if the terminal outputs the prompt `Consider promoting stable lessons to .memory/KNOWLEDGE.md.`, you MUST immediately read those lessons and proactively extract and append them to `.memory/KNOWLEDGE.md`.**
+- After adding, deleting, or modifying files, run `python .memory/session_log.py` to append a log. Required argument: the operation performed (`--done`/`added`/`modified`/`removed`). Optional arguments (if necessary): high-value experience or pitfalls (`--lesson`), context (`--context`), key decisions (`--decision`), and unresolved items (`--unresolved`). The script automatically handles timestamps, file lock retries, archiving of older entries, and structured entry formatting.
+- `.memory/KNOWLEDGE.md`: long-term reusable lessons and decisions. Read it only for recurring issues, debugging, architecture decisions, or when the current task likely depends on prior project experience. When running the `session_log.py` script, if the terminal outputs the prompt `Consider promoting stable lessons to .memory/KNOWLEDGE.md.`, you MUST immediately extract and append those lessons to `.memory/KNOWLEDGE.md`, and after doing so, change the corresponding `- lesson:` tag in `SESSION_LOG.md` (or the archived daily session markdown) to `- lesson(promoted):`.
 - `.memory/sessions/`: archived daily session logs older than the recent window. Do not read by default unless tracing older history.
 - `TODO.md`: user-governed, agent-assisted backlog; do not read or edit by default; if a session ends with unresolved items, suggest the user update TODO and apply changes only after user approval.
 - `CHANGELOG.md`: Release-oriented changelog, updated for release-specific changes or when recording milestones.

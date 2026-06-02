@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Please read @AGENTS.md for all repository guidelines, tech stack, commands, and architecture constraints.
+Must read @AGENTS.md for all repository guidelines, tech stack, commands, and architecture constraints.
 
 ## Claude Code specific instructions
 

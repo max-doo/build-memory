@@ -109,12 +109,12 @@ class SessionLogTests(unittest.TestCase):
         (self.root / "SESSION_LOG.md").write_text(
             "# Session Log\n\n"
             "## 2026-05-26\n\n"
-            "### 10:00 | codex\n\n"
-            "- lesson: First\n\n"
+            "### 12:00 | codex\n\n"
+            "- lesson: Third\n\n"
             "### 11:00 | codex\n\n"
             "- lesson: Second\n\n"
-            "### 12:00 | codex\n\n"
-            "- lesson: Third\n",
+            "### 10:00 | codex\n\n"
+            "- lesson: First\n",
             encoding="utf-8",
         )
 
@@ -126,7 +126,7 @@ class SessionLogTests(unittest.TestCase):
             agent="codex",
         )
 
-        self.assertEqual(["First", "Second", "Third", "Fourth"], result.lesson_candidates)
+        self.assertEqual(["Fourth", "Third", "Second", "First"], result.lesson_candidates)
 
     def test_existing_unparseable_log_is_not_rewritten(self):
         log_path = self.root / "SESSION_LOG.md"

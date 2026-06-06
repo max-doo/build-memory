@@ -98,7 +98,7 @@ IMPORTANT：依赖操作使用 `<package-manager>`，不要使用 `<disallowed-p
 ## 记忆层
 
 - `SESSION_LOG.md`：最近 7 天协作日志；需要近期上下文时可直接读取，默认禁止手动追加/改写会话条目；唯一允许的手动编辑：lesson 已写入 KNOWLEDGE.md 后，将对应`- lesson:` 标签修改为 `- lesson(promoted):`。
-- 新增、删除或修改文件后，运行：`python .memory/session_log.py`追加日志记录。必填项：记录操作（--done/added/modified/removed）；可填入项（如必要）：踩坑或高价值经验（--lesson）、上下文（--context）、关键决策（--decision）、遗留事项（--unresolved）。脚本会自动处理当前时间、文件锁重试、旧日期归档和结构化条目格式。
+- 新增、删除或修改文件后，运行：`python .memory/session_log.py`追加日志记录。必填项：任务总结（--done）、文件操作（--added/modified/removed）；可填入项（如必要）：踩坑或高价值经验（--lesson）、上下文（--context）、关键决策（--decision）、遗留事项（--unresolved）。脚本会自动处理当前时间、文件锁重试、旧日期归档和结构化条目格式。
 - `.memory/KNOWLEDGE.md`：长期可复用经验和决策；仅在处理反复问题、调试、架构决策或当前任务明显依赖项目历史经验时读取。当运行 `session_log.py` 脚本后，如果终端输出了 `Consider promoting stable lessons to .memory/KNOWLEDGE.md.` 的提示，你必须立刻主动将这些 lessons 提炼并追加到 `.memory/KNOWLEDGE.md` 中，并在完成沉淀后将 `SESSION_LOG.md`（或归档的历史 session markdown 中）中对应已沉淀 lesson 的 `- lesson:` 标签修改为 `- lesson(promoted):`
 - `.memory/sessions/`：超过最近窗口的每日归档日志；默认不读取，除非需要追溯更早历史。
 - `TODO.md`：用户主导、agent 辅助的 backlog；默认不读取或编辑；如果会话结束有待解决的遗留事项可建议用户更新TODO，由用户批准后再应用。

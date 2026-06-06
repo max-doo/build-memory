@@ -259,10 +259,14 @@ def _csv_or_repeated(values: list[str] | None) -> list[str]:
 def get_default_agent() -> str:
     if os.environ.get("SESSION_LOG_AGENT"):
         return os.environ["SESSION_LOG_AGENT"]
+    if os.environ.get("ANTIGRAVITY_AGENT") == "1":
+        return "Antigravity"
     if os.environ.get("CURSOR_AGENT") == "1":
-        return "cursor-agent"
-    if os.environ.get("CLAUDE_CODE") == "1" or os.environ.get("CLAUDE") == "1":
+        return "cursor"
+    if os.environ.get("CLAUDECODE") or os.environ.get("CLAUDE_CODE") or os.environ.get("CLAUDE"):
         return "claude-code"
+    if os.environ.get("CODEX_SHELL") or os.environ.get("CODEX_THREAD_ID") or os.environ.get("CODEX_INTERNAL_ORIGINATOR_OVERRIDE"):
+        return "Codex"
     return "agent"
 
 

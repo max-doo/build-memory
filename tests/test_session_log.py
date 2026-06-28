@@ -158,6 +158,31 @@ class SessionLogTests(unittest.TestCase):
         gaps = self.module.validate_memory_index(self.root)
         self.assertEqual(["2. Unrouted Section"], gaps)
 
+    def test_main_prints_warning_on_index_gap(self):
+        memory_dir = self.root / ".memory"
+        memory_dir.mkdir(exist_ok=True)
+        (memory_dir / "KNOWLEDGE.md").write_text(
+            "# Knowledge\n\n### 1. API Rules\n\n### 2. Unrouted Bug\n",
+            encoding="utf-8",
+        )
+        (memory_dir / "INDEX.md").write_text(
+            "# Index\n\n| api | api/ | ### 1. API Rules | note |\n",
+            encoding="utf-8",
+        )
+        (self.root / "SESSION_LOG.md").write_text("# Session Log\n", encoding="utf-8")
+
+        import io
+        from unittest.mock import patch
+
+        test_args = ["session_log.py", "--done", "test task"]
+        with patch.object(sys, "argv", test_args), patch("os.getcwd", return_value=str(self.root)), patch("pathlib.Path.cwd", return_value=self.root), patch("sys.stdout", new_callable=io.StringIO) as mock_stdout:
+            exit_code = self.module.main()
+
+        output = mock_stdout.getvalue()
+        self.assertEqual(0, exit_code)
+        self.assertIn("MEMORY INDEX MISMATCH DETECTED", output)
+        self.assertIn("- ### 2. Unrouted Bug", output)
+
 
 if __name__ == "__main__":
     unittest.main()

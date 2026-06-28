@@ -33,6 +33,7 @@ Before any write or modification, gather facts:
 - Package manager / language / framework (`package.json`, `pyproject.toml`, etc.)
 - Real commands from configuration scripts
 - **Read in full** all existing managed rule files in the workspace (whether standard `AGENTS.md` or legacy `.cursor/rules`, `CLAUDE.md`, etc.).
+- Check if `.memory/INDEX.md` exists and verify whether all `###` sections in `.memory/KNOWLEDGE.md` are routed in `INDEX.md`.
 
 **Empty workspace detection.** If the inspection finds no source directory, no package manifest, and no build config—i.e. only `.git`, README, etc.—STOP before writing any managed file. Ask the user to choose:
 1. Skip for now.
@@ -52,6 +53,7 @@ You MUST STOP and wait for the user's explicit approval. Do NOT proceed with any
 
 Once the user approves, **your very first step must always be copying the physical assets.**
 - Regardless of whether old or non-standard rule folders exist in the project, you **MUST** fully copy the `assets/.memory/` directory and its internal scripts to the project root.
+- Copy `.memory/INDEX.md` if missing.
 - Never "borrow" or "adapt to" legacy frameworks. The standard `.memory` directory and `session_log.py` are non-negotiable infrastructure.
 
 ### 4. Phase 3: Differential Merging (Strict Zones)

@@ -33,6 +33,7 @@ description: 初始化或完善 agent 工作空间的跟踪与规则文件。适
 - 包管理器 / 语言 / 框架（`package.json`、`pyproject.toml` 等）
 - 来自配置脚本的真实命令
 - 完整读取工作区中已存在的所有规则受管文件（无论是标准的、 `AGENTS.md` 还是旧的 `CLAUDE.md`、`.cursor/rules` 等）。
+- 检查是否存在 `.memory/INDEX.md`，并校检 `.memory/KNOWLEDGE.md` 中的所有 `###` 标题是否在 `INDEX.md` 中配置了路由。
 
 **空工作空间检测。** 若检查时未发现源码、包清单、构建配置——即仅含 `.git`、README 等——在写入前先**停下并询问用户**：暂时跳过，或者简述项目生成骨架。不要盲目填充占位符。
 
@@ -49,6 +50,7 @@ description: 初始化或完善 agent 工作空间的跟踪与规则文件。适
 
 一旦获得用户批准，**第一步永远是物理复刻资产**。
 - 无论项目中是否存在旧的或非标准的规则文件夹，你都**必须**将 Skill 中的 `assets/.memory/` 目录及其内部脚本完整复制到项目的根目录下。
+- 如果不存在 `.memory/INDEX.md`，从 assets 复制默认模板。
 - 绝不允许“借用旧框架”或“迎合非标准结构”。标准的 `.memory` 目录及 `session_log.py` 是不可动摇的基础设施。
 
 ### 4. 阶段三：差量融合与严格分区 (Differential Merging)

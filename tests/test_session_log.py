@@ -143,6 +143,22 @@ class SessionLogTests(unittest.TestCase):
 
         self.assertEqual(original, log_path.read_text(encoding="utf-8"))
 
+    def test_validate_memory_index_detects_missing_routes(self):
+        memory_dir = self.root / ".memory"
+        memory_dir.mkdir(exist_ok=True)
+        (memory_dir / "KNOWLEDGE.md").write_text(
+            "# Knowledge\n\n### 1. API Request Rules\n\n### 2. Unrouted Section\n",
+            encoding="utf-8",
+        )
+        (memory_dir / "INDEX.md").write_text(
+            "# Index\n\n| api-client | api/ | ### 1. API Request Rules | note |\n",
+            encoding="utf-8",
+        )
+
+        gaps = self.module.validate_memory_index(self.root)
+        self.assertEqual(["2. Unrouted Section"], gaps)
+
 
 if __name__ == "__main__":
     unittest.main()
+

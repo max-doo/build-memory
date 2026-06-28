@@ -8,7 +8,7 @@ import os
 import re
 import time
 from contextlib import contextmanager
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Iterable
@@ -26,6 +26,7 @@ class AppendResult:
     log_path: Path
     archived_dates: list[str]
     lesson_candidates: list[str]
+    index_gaps: list[str] = field(default_factory=list)
 
 
 @contextmanager
@@ -107,10 +108,12 @@ def append_session_note(
         lesson_candidates.extend(recent_lessons)
     lesson_candidates.extend(archived_lessons)
 
+    gaps = validate_memory_index(root)
     return AppendResult(
         log_path=log_path,
         archived_dates=archived_dates,
         lesson_candidates=_dedupe_preserving_order(lesson_candidates),
+        index_gaps=gaps,
     )
 
 
@@ -256,6 +259,21 @@ def _csv_or_repeated(values: list[str] | None) -> list[str]:
     return result
 
 
+def validate_memory_index(root: Path) -> list[str]:
+    knowledge_file = root / ".memory" / "KNOWLEDGE.md"
+    index_file = root / ".memory" / "INDEX.md"
+    if not knowledge_file.exists() or not index_file.exists():
+        return []
+    try:
+        k_text = knowledge_file.read_text(encoding="utf-8")
+        k_sections = {s.strip() for s in re.findall(r"^###\s+(.+)$", k_text, re.MULTILINE)}
+        i_text = index_file.read_text(encoding="utf-8")
+        i_routed = {s.strip() for s in re.findall(r"###\s+([^\|\r\n]+)", i_text)}
+        return sorted(list(k_sections - i_routed))
+    except Exception:
+        return []
+
+
 def get_default_agent() -> str:
     if os.environ.get("SESSION_LOG_AGENT"):
         return os.environ["SESSION_LOG_AGENT"]
@@ -319,6 +337,14 @@ def main() -> int:
         for item in result.lesson_candidates:
             print(f"- {item}")
         print("Consider promoting stable lessons to `.memory/KNOWLEDGE.md`.")
+    if result.index_gaps:
+        print("\n" + "=" * 68)
+        print("⚠️  [MEMORY INDEX MISMATCH DETECTED]")
+        print("The following sections in KNOWLEDGE.md lack routing entries in INDEX.md:")
+        for s in result.index_gaps:
+            print(f"  - ### {s}")
+        print("👉 Action Required: Add corresponding routing triggers to .memory/INDEX.md!")
+        print("=" * 68 + "\n")
     return 0
 
 

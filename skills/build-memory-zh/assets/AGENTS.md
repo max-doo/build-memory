@@ -97,15 +97,15 @@ IMPORTANT：依赖操作使用 `<package-manager>`，不要使用 `<disallowed-p
 
 ## 记忆层
 
-- `SESSION_LOG.md`：最近 7 天协作日志；需要近期上下文时可直接读取，默认禁止手动追加/改写会话条目；唯一允许的手动编辑：lesson 已写入 KNOWLEDGE.md 后，将对应`- lesson:` 标签修改为 `- lesson(promoted):`。
-- 新增、删除或修改文件后，运行：`python .memory/session_log.py`追加日志记录。必填项：任务总结（--done）、文件操作（--added/modified/removed）；可填入项（如必要）：踩坑或高价值经验（--lesson）、上下文（--context）、关键决策（--decision）、遗留事项（--unresolved）。脚本会自动处理当前时间、文件锁重试、旧日期归档和结构化条目格式。
-- `.memory/KNOWLEDGE.md`：长期可复用经验和决策；仅在处理反复问题、调试、架构决策或当前任务明显依赖项目历史经验时读取。当运行 `session_log.py` 脚本后，如果终端输出了 `Consider promoting stable lessons to .memory/KNOWLEDGE.md.` 的提示，你必须立刻主动将这些 lessons 提炼并追加到 `.memory/KNOWLEDGE.md` 中，并在完成沉淀后将 `SESSION_LOG.md`（或归档的历史 session markdown 中）中对应已沉淀 lesson 的 `- lesson:` 标签修改为 `- lesson(promoted):`
-- `.memory/sessions/`：超过最近窗口的每日归档日志；默认不读取，除非需要追溯更早历史。
-- `TODO.md`：用户主导、agent 辅助的 backlog；默认不读取或编辑；如果会话结束有待解决的遗留事项可建议用户更新TODO，由用户批准后再应用。
+- `SESSION_LOG.md`：最近 7 天协作日志；需要近期上下文时可直接读取，默认禁止手动追加/改写会话条目；唯一允许的手动编辑：lesson 已写入 KNOWLEDGE.md 后，将对应 `- lesson:` 标签修改为 `- lesson(promoted):`。
+- `.memory/INDEX.md`：知识库路由索引；遇到复杂任务、排查问题或需要参考历史经验时，**先读取本文件**，根据关键词匹配到对应的章节锚点。
+- `.memory/KNOWLEDGE.md`：长期可复用经验和决策；严禁全量读取，**必须先读 INDEX.md**，再根据路由仅读取本文件中对应的 `###` 章节。当运行 `session_log.py` 后，若终端提示沉淀经验，立刻主动将 lesson 追加到本文件中并在 `INDEX.md` 增加对应路由，最后将日志中的标签改为 `- lesson(promoted):`；**若新经验与旧知识发生冲突，直接就地更新或覆写旧条目，确保知识库唯一真实且无矛盾。**
+- `.memory/sessions/`：超过最近窗口的每日归档日志；默认不读取。
+- `TODO.md`：用户主导、agent 辅助的 backlog；默认不读取或编辑。
 - `CHANGELOG.md`：面向发布的变更日志，发布版本相关变更或记录里程碑时更新。
 
 ## 已知坑点
 
-- 高频、必须始终遵守的坑点写在这里，保持 3-7 条以内。
-- 可将 `.memory/KNOWLEDGE.md` 中满足以下条件的经验提升到本节：跨任务反复出现、误用代价高、无法从代码结构直接看出、可写成一句明确操作规则。
-- 其余长期经验、调试记录和稳定决策保留在 `.memory/KNOWLEDGE.md`；处理反复问题、调试、架构决策或明显依赖项目历史经验的任务时先读取该文件。
+- 高频、全局普适、一犯立毙的底线规则写在这里，保持 3-7 条以内。
+- 仅当触犯规则会导致毁灭性错误或在读取 L1 路由前便踩雷时，方可提升到本节。
+- 其余业务领域的调试记录、工具链细节和稳定决策保留在 `.memory/KNOWLEDGE.md`，通过 `.memory/INDEX.md` 按需切片路由。

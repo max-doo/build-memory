@@ -97,14 +97,15 @@ A session or task is considered complete when:
 
 ## Memory Layer
 
-- `SESSION_LOG.md`: recent 7-day collaboration log; read directly when recent context is needed. Manually appending or overwriting session entries is prohibited by default; the only allowed manual edit: after a lesson has been written to KNOWLEDGE.md, modify the corresponding `- lesson:` tag to `- lesson(promoted):`.
-- After adding, deleting, or modifying files, run `python .memory/session_log.py` to append a log. Required argument: Task Summary (--done), File Operations (--added/modified/removed). Optional arguments (if necessary): high-value experience or pitfalls (`--lesson`), context (`--context`), key decisions (`--decision`), and unresolved items (`--unresolved`). The script automatically handles timestamps, file lock retries, archiving of older entries, and structured entry formatting.
-- `.memory/KNOWLEDGE.md`: long-term reusable lessons and decisions. Read it only for recurring issues, debugging, architecture decisions, or when the current task likely depends on prior project experience. When running the `session_log.py` script, if the terminal outputs the prompt `Consider promoting stable lessons to .memory/KNOWLEDGE.md.`, you MUST immediately extract and append those lessons to `.memory/KNOWLEDGE.md`, and after doing so, change the corresponding `- lesson:` tag in `SESSION_LOG.md` (or the archived daily session markdown) to `- lesson(promoted):`.
-- `.memory/sessions/`: archived daily session logs older than the recent window. Do not read by default unless tracing older history.
-- `TODO.md`: user-governed, agent-assisted backlog; do not read or edit by default; if a session ends with unresolved items, suggest the user update TODO and apply changes only after user approval.
-- `CHANGELOG.md`: Release-oriented changelog, updated for release-specific changes or when recording milestones.
+- `SESSION_LOG.md`: Recent 7-day collaboration log; read when recent context is needed. Manual edits forbidden except changing `- lesson:` to `- lesson(promoted):` after promoting to KNOWLEDGE.md.
+- `.memory/INDEX.md`: Knowledge routing index; when encountering complex tasks, debugging, or needing historical context, **read this file first** to find matching section anchors by keywords.
+- `.memory/KNOWLEDGE.md`: Long-term reusable experience and decisions; NEVER read in full. **Must read INDEX.md first**, then read ONLY the routed `###` section in this file. When `session_log.py` prompts to promote lessons, immediately append them here, add a routing entry in `INDEX.md`, and update the log tag to `- lesson(promoted):`; **if new experience contradicts old knowledge, update or overwrite the old entry in place to maintain a conflict-free single source of truth.**
+- `.memory/sessions/`: Daily archived logs beyond the recent window; do not read by default.
+- `TODO.md`: User-driven, agent-assisted backlog; do not read or edit by default.
+- `CHANGELOG.md`: Release-facing change log; update on release or milestone changes.
+
 ## Known Gotchas
 
-- Keep only high-frequency gotchas that must be followed every session here, ideally 3-7 bullets.
-- Promote lessons from `.memory/KNOWLEDGE.md` into this section when they are recurring across tasks, costly when missed, not obvious from code structure, and expressible as one concrete operating rule.
-- Keep other long-term lessons, debugging notes, and stable decisions in `.memory/KNOWLEDGE.md`; read that file first for recurring issues, debugging, architecture decisions, or tasks that clearly depend on prior project history.
+- Keep high-frequency, universal, lethal rules here (strictly 3-5 rules max).
+- Only promote lessons from `.memory/KNOWLEDGE.md` to this section if violating them causes immediate fatal errors or irreversible damage before L1 routing occurs.
+- Domain-specific debugging tips, API rules, and architectural notes must stay in `.memory/KNOWLEDGE.md` and be accessed via `.memory/INDEX.md`.

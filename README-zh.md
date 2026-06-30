@@ -40,8 +40,9 @@ Skill 会检查你的工作区并创建或完善五个文件：
 
 同时会安装一个轻量 `.memory/` 支撑目录：
 
-- `.memory/session_log.py`：`SESSION_LOG.md` 的推荐写入脚本，包含锁重试、7 天归档和结构化字段。
-- `.memory/KNOWLEDGE.md`：长期可复用经验和稳定决策，仅按需读取。
+- `.memory/INDEX.md`：知识路由与索引文件，规范了领域知识模块的划分和查找路径。
+- `.memory/session_log.py`：`SESSION_LOG.md` 的推荐写入脚本，包含锁重试、7 天归档和结构化字段，并在适当时机调用 `validate_memory_index`。
+- `.memory/KNOWLEDGE.md`：长期可复用经验和稳定决策，需通过 `INDEX.md` 路由按需读取，且有 L0 经验陷阱（gotcha）的数量限制以防止信息过载。
 - `.memory/sessions/`：超过最近窗口的每日归档日志。
 
 ### 原则
@@ -78,7 +79,8 @@ Skill 从不虚构内容。它首先检查你的项目：
 ## 记忆层
 
 - `SESSION_LOG.md`：最近 7 天协作日志。使用 `python .memory/session_log.py` 追加记录；不要手工编辑。
-- `.memory/KNOWLEDGE.md`：长期可复用经验和决策；仅在任务明显依赖项目历史时读取。
+- `.memory/INDEX.md`：长期记忆的导航地图；若需查阅项目规范、架构或历史教训，必须首先阅读此文件并遵循其路由规则。
+- `.memory/KNOWLEDGE.md`：长期可复用经验和决策；需根据 `INDEX.md` 按需读取，严格遵守 L0 经验陷阱（gotcha）的数量限制。
 - `.memory/sessions/`：超过最近窗口的每日归档日志；默认不读取。
 - `TODO.md`：用户主导的任务看板，记录项目重要待办事项；按需读取，若需编辑需征求用户同意。
 - `CHANGELOG.md`：面向发布的变更日志；发布版本相关变更或记录里程碑时更新。
@@ -306,6 +308,7 @@ Windows 上 `~` 解析为 `C:\Users\<用户名>`。
 ├── assets/
 │   ├── .memory/
 │   │   ├── session_log.py
+│   │   ├── INDEX.md
 │   │   ├── KNOWLEDGE.md
 │   │   └── sessions/
 │   ├── AGENTS.md

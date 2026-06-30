@@ -12,6 +12,21 @@
 - 留空的小节（Removed、Security 等）可删除。
 -->
 
+## [1.2.0] - 2026-06-30
+
+### Added
+
+- 新增 `INDEX.md` 模板，用于知识路由与管理。
+- 增加 `validate_memory_index` 验证机制，用于检测未路由的 `KNOWLEDGE.md` 区块。
+- 补充关于索引不匹配（index mismatch）触发终端警告的集成测试。
+
+### Changed
+
+- 更新 `SKILL.md` 的操作指令，正式引入 `INDEX.md` 工作流。
+- 更新 `AGENTS.md` 规则，增加关于 `INDEX.md` 的路由规范以及 L0 经验陷阱（gotcha）的数量限制。
+- 优化 `session_log.py` 脚本，改进 Agent 类型的检测逻辑，移除重复代码，并修复相关测试。
+- 同步更新并清理中英文的 agent 与 claude 相关指引文档及测试文件。
+
 ## [1.1.0] - 2026-06-01
 
 ### Added

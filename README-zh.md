@@ -1,3 +1,7 @@
+<div align="right">
+  <a href="./README.md">English</a> | <strong>中文</strong>
+</div>
+
 # build-memory — 建立跨 Agent 的项目记忆层
 
 > **保存上下文，外化记忆，让 Agent 之间、人与 Agent 之间相互对齐。**

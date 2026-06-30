@@ -1,3 +1,7 @@
+<div align="right">
+  <strong>English</strong> | <a href="./README-zh.md">中文</a>
+</div>
+
 # build-memory — Building a Cross-Agent Project Memory Layer
 
 > **Preserve context, externalize memory, and keep humans and agents aligned.**
